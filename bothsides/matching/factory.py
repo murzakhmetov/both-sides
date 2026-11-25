@@ -80,7 +80,7 @@ class MatcherSetup:
             self._model_state = ModelState.UNCONFIRMED
             return
         choice = choose_model(listed, gemini.model)
-        gemini.use_model(choice.model, spare_models(listed, choice.model))
+        gemini.use_model(choice.model, spare_models(listed, choice.model, config.GEMINI_SPARE_MODELS))
         self._model_state = choice.state
 
     def _after_comparison(self, code: str) -> None:

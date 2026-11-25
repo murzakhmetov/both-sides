@@ -103,7 +103,7 @@ npx vercel env add GEMINI_API_KEY production --sensitive
 
 To change the key, remove it first (`npx vercel env rm GEMINI_API_KEY production`), add the new one and deploy again. Without the new deployment the site goes on with the old key, and with the word list once that key is deleted.
 
-The page is public, so the key has a budget: at most 16 requests a minute for one visitor, 60 a minute and 1,500 a day for one address, 90 a minute and 3,000 a day for one running copy; after that the offline matcher answers. Only a limit set at Google covers all running copies together. The mini-demo of the landing page never asks Gemini. On Vercel `GEMINI_MODEL` is `gemini-3.5-flash`: on 25 November 2026 the default `gemini-3.8-flash` answered every request with 503 (overloaded).
+The page is public, so the key has a budget: at most 16 requests a minute for one visitor, 60 a minute and 1,500 a day for one address, 90 a minute and 3,000 a day for one running copy; after that the offline matcher answers. Only a limit set at Google covers all running copies together. The mini-demo of the landing page never asks Gemini. On Vercel `GEMINI_MODEL` is `gemini-3.5-flash-lite`: in the evening of 25 November 2026 `gemini-3.8-flash` and `gemini-3.7-flash` answered 503 (overloaded) and `gemini-3.5-flash` 429 (limit of the Google project). Google's daily limits belong to the project, not to the key, and begin anew at midnight Pacific time.
 
 Functions on Vercel stop and start as they like and share no memory. So online every visitor has a board of their own: what happened on it travels in signed cookies, and any running copy plays it again ([online.py](bothsides/server/online.py)). It differs from the laptop in five points:
 

@@ -34,6 +34,8 @@
   "phone.counter": "{n} / {max}",
   "phone.answer_by": "Жауап беру мерзімі: {date}",
   "phone.send": "Жауапты жіберу",
+  "phone.send_anyway": "Осылай жіберу",
+  "phone.too_little": "Бұл кім екенін де, ақша не үшін екенін де жазыңыз.",
   "phone.sending": "Жіберіліп жатыр…",
   "phone.deny": "Мен бұл адамды танымаймын",
   "phone.deny_confirm": "Растау үшін 4 секунд ішінде қайта басыңыз",

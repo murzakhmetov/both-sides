@@ -81,6 +81,40 @@ test('an answer that comes too late for its transfer is explained', async ({ bro
   await expect(page.getByText('Открыт новый перевод')).toBeHidden()
 })
 
+test('an answer with only one half is asked for the other one, once', async ({ page }) => {
+  await signIn(page, '/stage')
+  await startScene(page, 'brother')
+  await page.goto('/receiver')
+  const field = page.locator('textarea')
+  const hint = page.getByText('Напишите и кто это, и за что деньги.')
+  await field.fill('Мой брат')
+  await expect(hint).toBeHidden()
+  await page.getByRole('button', { name: 'Отправить ответ' }).click()
+  await expect(hint).toBeVisible()
+  await expect(field).toBeFocused()
+  await page.getByRole('button', { name: 'Отправить так' }).click()
+  await expect(field).toHaveValue('Мой брат')
+  await page.waitForTimeout(900)
+  await field.fill('Мой брат, за аренду')
+  await expect(hint).toBeHidden()
+  await expect(page.getByRole('button', { name: 'Отправить ответ' })).toBeVisible()
+  await field.fill('Мой брат')
+  await page.getByRole('button', { name: 'Отправить так' }).click()
+  await expect(field).toHaveCount(0)
+})
+
+test('a whole answer and a denial are sent at once', async ({ page }) => {
+  await signIn(page, '/stage')
+  for (const text of ['брат прислал за аренду', 'не знаю']) {
+    await startScene(page, 'brother')
+    await page.goto('/receiver')
+    await page.locator('textarea').fill(text)
+    await page.getByRole('button', { name: 'Отправить ответ' }).click()
+    await expect(page.locator('textarea')).toHaveCount(0)
+  }
+  await startScene(page, 'brother')
+})
+
 test('a request that never ends is reported and the phone recovers', async ({ page }) => {
   test.setTimeout(40_000)
   await page.goto('/receiver')

@@ -202,6 +202,57 @@ def test_a_comparison_never_takes_longer_than_the_limit(monkeypatch: pytest.Monk
     assert time.monotonic() - started < 1.3
 
 
+def test_a_main_model_that_is_gone_is_reported_after_a_slow_spare(monkeypatch: pytest.MonkeyPatch) -> None:
+    class NotFoundError(Exception):
+        """Like the SDK's error for HTTP 404."""
+
+    monkeypatch.setattr(config, "GEMINI_TRY_SECONDS", 0.15)
+    monkeypatch.setattr(config, "GEMINI_NEXT_TRY_SECONDS", 0.1)
+
+    def reply(request: dict[str, Any]) -> Any:
+        if request["model"] == "b":
+            time.sleep(2.0)
+        return NotFoundError("gone") if request["model"] == "a" else InternalServerError("busy")
+
+    subject, client = with_models(reply, timeout=0.8)
+    subject._answered = ("b", time.monotonic() + 60)
+    with pytest.raises(MatcherError) as caught:
+        subject.compare(RECEIVER, SENDER)
+    assert (caught.value.code, asked(client)) == ("model_not_found", ["b", "a", "c"])
+
+
+def test_a_spare_answers_when_the_main_model_is_gone_beside_a_slow_one(monkeypatch: pytest.MonkeyPatch) -> None:
+    class NotFoundError(Exception):
+        """Like the SDK's error for HTTP 404."""
+
+    monkeypatch.setattr(config, "GEMINI_TRY_SECONDS", 0.15)
+    monkeypatch.setattr(config, "GEMINI_NEXT_TRY_SECONDS", 0.1)
+
+    def reply(request: dict[str, Any]) -> Any:
+        if request["model"] == "b":
+            time.sleep(2.0)
+        return NotFoundError("gone") if request["model"] == "a" else gemini_reply()
+
+    subject, client = with_models(reply, timeout=3.0)
+    subject._answered = ("b", time.monotonic() + 60)
+    assert subject.compare(RECEIVER, SENDER).model == "c"
+
+
+def test_a_refused_budget_is_asked_once(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(config, "GEMINI_TRY_SECONDS", 0.1)
+    monkeypatch.setattr(config, "GEMINI_NEXT_TRY_SECONDS", 0.05)
+    answers = iter([True, False])
+    heard: list[bool] = []
+
+    def may_ask() -> bool:
+        heard.append(next(answers))
+        return heard[-1]
+
+    subject, _ = with_models(slow_and_busy({"a": 0.5}), timeout=2.0, may_ask=may_ask)
+    assert subject.compare(RECEIVER, SENDER).model == "a"
+    assert heard == [True, False]
+
+
 def test_the_main_model_gets_its_place_back(monkeypatch: pytest.MonkeyPatch) -> None:
     now = [1000.0]
     monkeypatch.setattr(time, "monotonic", lambda: now[0])

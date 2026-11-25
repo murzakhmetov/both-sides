@@ -100,7 +100,7 @@ ONLINE_LIST_TIMEOUT_SECONDS = 4.0
 GEMINI_CHECK_AGAIN_SECONDS = 20.0
 #: The SDK retries several times by default; one attempt is enough here.
 GEMINI_ATTEMPTS = 1
-#: Asked in this order while the model is overloaded, until Google's list says which ones there are.
+#: Asked in this order while the model is overloaded; once Google's list is known, only those that are on it.
 GEMINI_SPARE_MODELS = ("gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.6-flash")
 #: So long a model that answered is asked first; then the main model gets its place back.
 GEMINI_KEEP_SECONDS = 120.0

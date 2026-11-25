@@ -1,4 +1,5 @@
-import { useId, useRef, type FormEvent, type ReactNode } from 'react'
+import { useId, useRef, useState, type FormEvent, type ReactNode } from 'react'
+import { saysTooLittle } from '../answer'
 import type { PhoneView, Side } from '../api/types'
 import { AlertIcon, CalendarIcon, LawIcon, LockIcon, MessageIcon, ShieldIcon } from '../components/icons'
 import { PhoneShell } from '../components/PhoneShell'
@@ -9,7 +10,7 @@ import { formatDeadline } from '../format'
 import { useFocusHeading } from '../hooks/useFocusHeading'
 import { usePhone, type Phone } from '../hooks/usePhone'
 import { useRescueFocus } from '../hooks/useRescueFocus'
-import { useSettled } from '../hooks/useSettled'
+import { SETTLE_MS, useSettled } from '../hooks/useSettled'
 import { useI18n, useTitle, type Key } from '../i18n'
 
 const MAX_LENGTH = 300
@@ -108,9 +109,24 @@ function Question({ phone, view }: PartProps) {
   const fieldId = useId()
   const receiver = view.side === 'receiver'
   const empty = phone.text.trim().length === 0
+  const field = useRef<HTMLTextAreaElement>(null)
+  /** The case for which the phone has already asked for the missing half of the answer. */
+  const [askedFor, setAskedFor] = useState('')
+  const askedAt = useRef(0)
+  const tooLittle = saysTooLittle(phone.text)
+  const asks = tooLittle && !empty && askedFor === view.case_id
   const submit = (event: FormEvent) => {
     event.preventDefault()
-    if (!empty) void phone.act('answer', { text: phone.text })
+    if (empty) return
+    if (tooLittle && askedFor !== view.case_id) {
+      setAskedFor(view.case_id)
+      askedAt.current = performance.now()
+      field.current?.focus()
+      return
+    }
+    // The second tap of a double tap has not read the question yet.
+    if (asks && performance.now() - askedAt.current < SETTLE_MS) return
+    void phone.act('answer', { text: phone.text })
   }
   return (
     <div className="animate-enter">
@@ -130,6 +146,7 @@ function Question({ phone, view }: PartProps) {
           maxLength={MAX_LENGTH}
           onChange={(event) => phone.type(event.target.value)}
           placeholder={t('phone.placeholder')}
+          ref={field}
           rows={3}
           value={phone.text}
         />
@@ -141,9 +158,17 @@ function Question({ phone, view }: PartProps) {
             </span>
           )}
         </p>
+        <div aria-live="polite">
+          {asks && (
+            <p className="mt-2 flex items-start gap-2.5 rounded-tile bg-sunken px-4 py-3 text-lg leading-snug font-bold">
+              <AlertIcon className="mt-0.5 size-5 shrink-0" />
+              <span>{t('phone.too_little')}</span>
+            </p>
+          )}
+        </div>
         <ActionError phone={phone} />
         <Button className="mt-2.5 w-full" inactive={empty || phone.running !== null} type="submit">
-          {t(phone.running === 'answer' ? 'phone.sending' : 'phone.send')}
+          {t(phone.running === 'answer' ? 'phone.sending' : asks ? 'phone.send_anyway' : 'phone.send')}
         </Button>
       </form>
       {receiver && <Denial phone={phone} />}

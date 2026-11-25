@@ -34,6 +34,8 @@
   "phone.counter": "{n} из {max}",
   "phone.answer_by": "Ответьте, пожалуйста, до {date}",
   "phone.send": "Отправить ответ",
+  "phone.send_anyway": "Отправить так",
+  "phone.too_little": "Напишите и кто это, и за что деньги.",
   "phone.sending": "Отправляем…",
   "phone.deny": "Я не знаю этого человека",
   "phone.deny_confirm": "Нажмите ещё раз в течение 4 секунд, чтобы подтвердить",

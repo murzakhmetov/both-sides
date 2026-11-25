@@ -38,6 +38,12 @@ async function answerBoth(browser: Browser, receiver: string, sender: string): P
     await phone.goto(`/${side}`)
     await phone.locator('textarea').fill(text)
     await phone.getByRole('button', { name: 'Отправить ответ' }).click()
+    // The phone asks once when an answer says too little.
+    const anyway = phone.getByRole('button', { name: 'Отправить так' })
+    if (await anyway.isVisible()) {
+      await phone.waitForTimeout(900)
+      await anyway.click()
+    }
     await expect(phone.locator('textarea')).toBeHidden()
   }
 }

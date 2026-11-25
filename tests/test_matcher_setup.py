@@ -40,6 +40,9 @@ def test_spare_models_are_listed_light_first_and_never_old() -> None:
     listed = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-2.5-flash", "gemini-3.8-flash-tts"]
     assert spare_models(listed, "gemini-3.8-flash") == ("gemini-3.5-flash-lite", "gemini-3.7-flash", "gemini-3.6-flash")
     assert spare_models(["gemini-3.8-flash", "gemini-2.5-flash"], "gemini-3.8-flash") == ()
+    wanted = ("gemini-3.6-flash", "gemini-9-flash", "gemini-3.5-flash-lite")
+    assert spare_models(listed, "gemini-3.5-flash-lite", wanted) == ("gemini-3.6-flash", "gemini-3.8-flash", "gemini-3.7-flash")
+    assert spare_models(listed, "gemini-3.8-flash", wanted) == ("gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-3.7-flash")
 
 
 def test_chain_prefers_the_language_model() -> None:

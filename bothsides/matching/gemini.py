@@ -140,18 +140,20 @@ class GeminiMatcher:
         """Ask a model. When it fails or is slow, ask the next one beside it: the first answer counts."""
         until = time.monotonic() + self._timeout
         replies: queue.Queue[tuple[str, MatchResult | MatcherError]] = queue.Queue()
-        models, asked, running, go_on = self._order(), 0, 0, True
-        failure = MatcherError("rate_limited")
+        models, asked, running, go_on, refused = self._order(), 0, 0, True, False
+        failure, gone = MatcherError("rate_limited"), None
         while True:
             left = until - time.monotonic()
             in_time = not asked or left >= config.GEMINI_NEXT_TRY_SECONDS
-            if go_on and asked < len(models) and in_time and self._may_ask():
-                self._start(models[asked], text, left, replies)
-                asked, running = asked + 1, running + 1
+            if go_on and not refused and asked < len(models) and in_time:
+                refused = not self._may_ask()
+                if not refused:
+                    self._start(models[asked], text, left, replies)
+                    asked, running = asked + 1, running + 1
             if not running:
-                raise failure
+                raise gone or failure
             if left <= 0:
-                raise MatcherError("timeout")
+                raise gone or MatcherError("timeout")
             try:
                 model, reply = replies.get(timeout=min(left, config.GEMINI_TRY_SECONDS) if asked < len(models) else left)
             except queue.Empty:
@@ -162,11 +164,12 @@ class GeminiMatcher:
                 self._remember(model)
                 return reply
             failure = reply
-            # The main model is gone: the caller has to hear it and ask for the list again.
-            gone = reply.code == "model_not_found" and model == self._model
-            if gone and not running:
-                raise reply
-            go_on = reply.code in _NEXT_MODEL and not gone
+            if reply.code == "model_not_found" and model == self._model:
+                # The main model is gone: the caller has to hear it and ask for the list again.
+                gone = reply
+                if not running:
+                    raise gone
+            go_on = reply.code in _NEXT_MODEL
 
     def _start(self, model: str, text: str, seconds: float, replies: queue.Queue[tuple[str, MatchResult | MatcherError]]) -> None:
         """Ask in a thread of its own. It may go on when the comparison is over; nobody hears it then."""

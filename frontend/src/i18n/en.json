@@ -34,6 +34,8 @@
   "phone.counter": "{n} of {max}",
   "phone.answer_by": "Please answer before {date}",
   "phone.send": "Send answer",
+  "phone.send_anyway": "Send as it is",
+  "phone.too_little": "Write both: who it is and what the money is for.",
   "phone.sending": "Sending…",
   "phone.deny": "I do not know this person",
   "phone.deny_confirm": "Tap again within 4 seconds to confirm",

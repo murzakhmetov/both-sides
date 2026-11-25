@@ -59,18 +59,22 @@ def _newest(names: tuple[str, ...], pattern: re.Pattern[str]) -> str | None:
     return max(ranked)[1] if ranked else None
 
 
-def spare_models(listed: Iterable[str], used: str) -> tuple[str, ...]:
-    """Other listed Flash models with the same settings (Gemini 3 and later): the newest light one, then the newest ones.
+def spare_models(listed: Iterable[str], used: str, preferred: tuple[str, ...] = ()) -> tuple[str, ...]:
+    """Other listed Flash models with the same settings (Gemini 3 and later): the preferred ones, then the
+    newest light one, then the newest ones.
 
     A light model is rarely overloaded together with the others.
     """
+    listed = tuple(listed)
+    first = tuple(name for name in preferred if name in listed and name != used)
     ranked = sorted(
         ((rank, name) for name in set(listed) if name != used and (rank := _rank(name, _FLASH)) is not None and rank[1] >= 3),
         key=lambda item: (item[0][1], item[0][2], item[0][0]),
         reverse=True,
     )
     light = [name for rank, name in ranked if not rank[0]][:1]
-    return (*light, *(name for _, name in ranked if name not in light))[:_SPARES]
+    rest = (*light, *(name for _, name in ranked if name not in light))
+    return (*first, *(name for name in rest if name not in first))[:_SPARES]
 
 
 def choose_model(listed: Iterable[str], wanted: str) -> ModelChoice:

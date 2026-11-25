@@ -45,6 +45,8 @@ What to check: meaning, spelling, polite form (сіз), terms a bank would use, 
 | `phone.counter` | {n} / {max} | {n} из {max} | {n} of {max} | |
 | `phone.answer_by` | Жауап беру мерзімі: {date} | Ответьте, пожалуйста, до {date} | Please answer before {date} | |
 | `phone.send` | Жауапты жіберу | Отправить ответ | Send answer | |
+| `phone.send_anyway` | Осылай жіберу | Отправить так | Send as it is | |
+| `phone.too_little` | Бұл кім екенін де, ақша не үшін екенін де жазыңыз. | Напишите и кто это, и за что деньги. | Write both: who it is and what the money is for. | |
 | `phone.sending` | Жіберіліп жатыр… | Отправляем… | Sending… | |
 | `phone.deny` | Мен бұл адамды танымаймын | Я не знаю этого человека | I do not know this person | |
 | `phone.deny_confirm` | Растау үшін 4 секунд ішінде қайта басыңыз | Нажмите ещё раз в течение 4 секунд, чтобы подтвердить | Tap again within 4 seconds to confirm | |

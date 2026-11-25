@@ -114,7 +114,7 @@ function Question({ phone, view }: PartProps) {
   const [askedFor, setAskedFor] = useState('')
   const askedAt = useRef(0)
   const tooLittle = saysTooLittle(phone.text)
-  const asks = tooLittle && !empty && askedFor === view.case_id
+  const asks = tooLittle && !empty && askedFor === view.case_id && phone.running !== 'answer'
   const submit = (event: FormEvent) => {
     event.preventDefault()
     if (empty) return
@@ -160,7 +160,7 @@ function Question({ phone, view }: PartProps) {
         </p>
         <div aria-live="polite">
           {asks && (
-            <p className="mt-2 flex items-start gap-2.5 rounded-tile bg-sunken px-4 py-3 text-lg leading-snug font-bold">
+            <p className="mt-1.5 flex items-start gap-2.5 rounded-tile bg-sunken px-4 py-2 text-lg leading-snug font-bold">
               <AlertIcon className="mt-0.5 size-5 shrink-0" />
               <span>{t('phone.too_little')}</span>
             </p>

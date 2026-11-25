@@ -155,6 +155,8 @@ After "I do not know this person" the sender is asked as usual. The answer goes 
 
 Only a person ends a hold. The deadline is 18:00 on the fifth working day, counted from the day after the stop; weekends and the public holidays in the config are skipped.
 
+**Before an answer is sent** the phone looks whether one half is missing ("my brother", "for the rent") and asks for it once ([answer.ts](frontend/src/answer.ts)). A second press sends the answer as it is; a denial and a whole answer are never asked. The rules above do not change.
+
 ## The AI part
 
 - Gemini through the Interactions API of `google-genai` with structured output, `store=False`, one attempt per model, 20 seconds in total. When a model is overloaded (HTTP 5xx or 429) or takes more than 4 seconds, the next Flash model is asked beside it, up to three of them within the same 20 seconds (from Google's list; before it has been read, from the config). The first answer counts, and the model that gave it is asked first for two minutes. The case file and the stage name the model that answered. The evaluation and the live check ask one model only. The call was written from the documentation page on structured outputs and the source of version 3.6.1 on 24 November 2026.

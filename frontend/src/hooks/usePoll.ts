@@ -21,6 +21,16 @@ export class ReplyOrder {
     this.applied = order
     return true
   }
+
+  /**
+   * The same for the reply to an action. Polls that are still under way were sent before this
+   * reply came, so another copy of the server may answer them with the state before the action.
+   */
+  acceptAction(order: number): boolean {
+    if (!this.accept(order)) return false
+    this.applied = this.sent + 1
+    return true
+  }
 }
 
 export interface Poll<T> {
@@ -108,7 +118,7 @@ export function usePoll<T>(path: string | null, intervalMs: number): Poll<T> {
       const next = await request()
       // The user may have moved on to another case while the request ran.
       if (currentPath.current !== path) return
-      if (order.current.accept(number)) setReply({ data: next, askedAt })
+      if (order.current.acceptAction(number)) setReply({ data: next, askedAt })
       else wake.current()
     },
     [path],

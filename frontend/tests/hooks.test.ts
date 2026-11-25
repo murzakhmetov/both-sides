@@ -76,3 +76,31 @@ describe('messages of the demo page', () => {
     },
   )
 })
+
+describe('the reply to an action', () => {
+  it('makes polls that were under way useless', () => {
+    const order = new ReplyOrder()
+    const action = order.next()
+    const poll = order.next()
+    expect(order.acceptAction(action)).toBe(true)
+    expect(order.accept(poll)).toBe(false)
+    expect(order.accept(order.next())).toBe(true)
+  })
+
+  it('gives way to a later poll that is already on the screen', () => {
+    const order = new ReplyOrder()
+    const action = order.next()
+    expect(order.accept(order.next())).toBe(true)
+    expect(order.acceptAction(action)).toBe(false)
+    expect(order.accept(order.next())).toBe(true)
+  })
+
+  it('lets two actions follow each other', () => {
+    const order = new ReplyOrder()
+    const first = order.next()
+    const second = order.next()
+    expect(order.acceptAction(first)).toBe(true)
+    expect(order.acceptAction(second)).toBe(false)
+    expect(order.accept(order.next())).toBe(true)
+  })
+})

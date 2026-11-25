@@ -141,35 +141,40 @@ def test_pages_get_the_security_headers_of_the_app() -> None:
     assert sent["X-Robots-Tag"] == "noindex"
 
 
-def test_pages_of_the_app_lead_to_the_mini_demo() -> None:
-    redirects = {item["source"]: item for item in SETTINGS["redirects"]}
-    assert _PAGES <= set(redirects)
-    assert {item["destination"] for item in redirects.values()} == {"/#demo"}
-    assert not any(item["permanent"] for item in redirects.values())
+def test_every_address_of_the_app_is_served() -> None:
+    rewrites = {item["source"]: item["destination"] for item in SETTINGS["rewrites"]}
+    pages = next(source for source, target in rewrites.items() if target == "/app.html" and "start" in source)
+    assert {f"/{name}" for name in pages.strip("/()").split("|")} == set(_PAGES)
+    assert rewrites["/console/:id"] == "/app.html"
+    assert rewrites["/api/try"] == "/api/compare"
+    assert rewrites["/api/:path*"] == "/api/app?p=:path*"
+    assert "redirects" not in SETTINGS
 
 
-def test_the_function_is_reached_under_the_address_of_the_page() -> None:
-    assert SETTINGS["rewrites"] == [{"source": "/api/try", "destination": "/api/compare"}]
+def test_the_functions() -> None:
     assert SETTINGS["outputDirectory"] == "web"
-    assert list(SETTINGS["functions"]) == ["api/compare.py"]
+    assert set(SETTINGS["functions"]) == {"api/app.py", "api/compare.py"}
 
 
-def upload_rules() -> list[str]:
+def test_only_what_is_needed_is_uploaded() -> None:
     lines = (ROOT / ".vercelignore").read_text(encoding="utf-8").splitlines()
-    return [line for line in lines if line and not line.startswith("#")]
-
-
-def test_only_the_page_and_the_function_are_uploaded() -> None:
-    rules = upload_rules()
+    rules = [line for line in lines if line and not line.startswith("#")]
     assert rules[0] == "/*"
     assert {rule for rule in rules if rule.startswith("!")} == {"!/api", "!/bothsides", "!/web", "!/vercel.json"}
 
 
-def test_the_page_and_the_bundle_of_the_app_are_not_uploaded() -> None:
-    rules = upload_rules()
-    for rule in ("/web/app.html", "/web/assets/app-*"):
-        assert rules.index(rule) > rules.index("!/web"), "a later rule wins"
-    # The landing page needs none of the files that stay at home.
-    landing = [ROOT / "web" / "index.html", *(ROOT / "web" / "assets").glob("landing-*")]
-    assert len(landing) == 3
-    assert not any("/assets/app-" in path.read_text(encoding="utf-8") for path in landing)
+@pytest.mark.parametrize(
+    ("raw", "target"),
+    [
+        ("/api/phone/receiver?p=phone/receiver", "/api/phone/receiver"),
+        ("/api/app?p=phone/receiver", "/api/phone/receiver"),
+        ("/api/app?p=cases/BS-2026-4111/release", "/api/cases/BS-2026-4111/release"),
+        ("/api/stage", "/api/stage"),
+    ],
+)
+def test_the_app_function_finds_the_address(raw: str, target: str) -> None:
+    spec = importlib.util.spec_from_file_location("vercel_app", ROOT / "api" / "app.py")
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    assert module._target(raw) == target

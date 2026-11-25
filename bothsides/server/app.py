@@ -29,6 +29,9 @@ _PAGES = frozenset({"/start", "/receiver", "/sender", "/login", "/stage", "/cons
 class App:
     """Checks every request and calls the right handler."""
 
+    #: True online: the board belongs to one visitor, and staff pages are open.
+    sandbox = False
+
     def __init__(
         self,
         service: CaseService,

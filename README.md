@@ -4,7 +4,7 @@ When a bank's anti-fraud stops a transfer between two of its clients, this proto
 
 Why: phone scammers coach the sender before the bank calls. Asking only the sender means hearing the scammer's story. The receiver was not coached by the same call, or is a stranger.
 
-Landing page with a mini-demo: <https://both-sides-six.vercel.app>
+Try it: <https://both-sides-six.vercel.app> (landing page and the whole app)
 
 Hackathon project for the BCC case of ITU HACKATHON-2026. It is a prototype, not a bank app and not an official BCC product. All people and amounts are invented.
 
@@ -92,13 +92,15 @@ One long scroll in English, Russian and Kazakh (beta): the problem, the insight,
 
 Checked in Edge and Chrome, and in the Firefox and WebKit engines of Playwright on Windows, at emulated sizes. Not checked: real phones, Safari on a real iPhone, a screen reader, a native speaker.
 
-## Landing page on Vercel
+## Online (Vercel)
 
-Online since 25 November 2026: <https://both-sides-six.vercel.app> (Vercel project `both-sides`, region Frankfurt).
+<https://both-sides-six.vercel.app> carries the landing page and the whole app: phones, stage, console, demo page. The files of `web/` are static; [api/app.py](api/app.py) answers the app's addresses and [api/compare.py](api/compare.py) the mini-demo, so the mini-demo works even when the app does not. No build, no packages, no key: the offline matcher compares. `vercel.json` and `.vercelignore` hold the settings.
 
-`vercel.json` puts the landing page and the mini-demo online: the files of `web/` and one Python function ([api/compare.py](api/compare.py)) behind `POST /api/try`, with the same matcher, rules and limits. Pages, files and answers carry the security headers of the app; redirects carry only Vercel's own. No build, no packages, no key. `.vercelignore` uploads `api/`, `bothsides/` (the function imports it, nothing serves its files), `vercel.json` and `web/` without the page and the bundle of the app. The limit of 30 tries a minute counts per address and per running copy of the function.
+Functions on Vercel stop and start as they like and share no memory. So online every visitor has a board of their own: what happened on it travels in signed cookies, and any running copy plays it again ([online.py](bothsides/server/online.py)). It differs from the laptop in three points:
 
-The app itself (phones, stage, console) stays on the laptop: its cases and logins live in the memory of one process, and functions on Vercel stop and start as they like. On Vercel its addresses lead to the mini-demo, so "Open the live demo" ends there too.
+- staff pages are open without a password, because a visitor sees only the own board with invented people;
+- one board per browser: two real phones cannot share a case (use the laptop for that);
+- a board starts again after two hours without an action, and after a new deployment.
 
 After a change run `npm run build` in `frontend/`, then from this folder:
 
@@ -236,7 +238,7 @@ bothsides/server/          HTTP, routes, login, limits, headers
 frontend/                  React source of the app, web/ the built files
 frontend/landing/          React source of the landing page
 landing-media/             its pictures and videos, and the script that cuts them
-api/, vercel.json          the landing page and its mini-demo on Vercel
+api/, vercel.json          the landing page and the app on Vercel
 evaluation/                simulated pairs, evaluation, live check
 tests/                     pytest, shared matcher cases
 docs/                      Kazakh review sheet, pictures and prompts of the landing page

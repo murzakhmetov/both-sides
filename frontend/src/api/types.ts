@@ -135,4 +135,6 @@ export interface StatusView {
     readonly model: string
     readonly model_state: string
   }
+  /** Online: the board belongs to this browser, and staff pages are open. */
+  readonly sandbox: boolean
 }

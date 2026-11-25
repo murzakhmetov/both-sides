@@ -3,8 +3,14 @@
   "framework": null,
   "installCommand": "",
   "outputDirectory": "web",
-  "regions": ["fra1"],
+  "regions": [
+    "fra1"
+  ],
   "functions": {
+    "api/app.py": {
+      "maxDuration": 15,
+      "excludeFiles": "web/**"
+    },
     "api/compare.py": {
       "maxDuration": 10,
       "excludeFiles": "web/**"
@@ -14,53 +20,18 @@
     {
       "source": "/api/try",
       "destination": "/api/compare"
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/start",
-      "destination": "/#demo",
-      "permanent": false
     },
     {
-      "source": "/receiver",
-      "destination": "/#demo",
-      "permanent": false
+      "source": "/api/:path*",
+      "destination": "/api/app?p=:path*"
     },
     {
-      "source": "/sender",
-      "destination": "/#demo",
-      "permanent": false
+      "source": "/(start|receiver|sender|stage|console|demo|login)",
+      "destination": "/app.html"
     },
     {
-      "source": "/stage",
-      "destination": "/#demo",
-      "permanent": false
-    },
-    {
-      "source": "/console",
-      "destination": "/#demo",
-      "permanent": false
-    },
-    {
-      "source": "/console/:path*",
-      "destination": "/#demo",
-      "permanent": false
-    },
-    {
-      "source": "/demo",
-      "destination": "/#demo",
-      "permanent": false
-    },
-    {
-      "source": "/login",
-      "destination": "/#demo",
-      "permanent": false
-    },
-    {
-      "source": "/app.html",
-      "destination": "/#demo",
-      "permanent": false
+      "source": "/console/:id",
+      "destination": "/app.html"
     }
   ],
   "headers": [

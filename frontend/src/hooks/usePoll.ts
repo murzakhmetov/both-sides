@@ -75,7 +75,8 @@ export function usePoll<T>(path: string | null, intervalMs: number): Poll<T> {
         if (!stopped) setErrorCode(codeOf(error))
       } finally {
         running = false
-        if (!stopped) timer = window.setTimeout(() => void ask(), askAgain ? 0 : intervalMs)
+        // A tab that nobody sees asks nothing; it asks at once when it is shown again.
+        if (!stopped && !document.hidden) timer = window.setTimeout(() => void ask(), askAgain ? 0 : intervalMs)
       }
     }
 

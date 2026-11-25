@@ -84,7 +84,8 @@ def _status(context: Context) -> Response:
                 "reason": status.reason,
                 "model": status.model,
                 "model_state": status.model_state,
-            }
+            },
+            "sandbox": context.app.sandbox,
         }
     )
 

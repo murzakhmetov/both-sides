@@ -235,8 +235,10 @@ What to check: meaning, spelling, polite form (сіз), terms a bank would use, 
 | `start.scenes` | Үш көрініс | Три сцены показа | Three demo scenes | |
 | `start.phones` | Телефондар | Телефоны | Phones | |
 | `start.phones.text` | Екі телефонда немесе екі терезеде ашыңыз. | Откройте на двух телефонах или в двух окнах. | Open them on two phones or in two windows. | |
+| `start.phones.online` | Осы браузердің екі терезесінде ашыңыз. | Откройте в двух окнах этого браузера. | Open them in two windows of this browser. | |
 | `start.staff` | Қызметкерлерге | Для сотрудников | For staff | |
 | `start.staff.text` | Құпиясөз керек. | Нужен пароль. | Password needed. | |
+| `start.staff.online` | Құпиясөз керек емес: бұл сіздің оқу тақтаңыз. Оны тек осы браузер көреді, екі сағаттан кейін ол қайта басталады. | Пароль не нужен: это ваша учебная доска. Её видит только этот браузер, через два часа она начинается заново. | No password needed: this is your own practice board. Only this browser sees it, and after two hours it starts again. | |
 | `start.matcher` | Жауаптарды кім салыстырады | Кто сравнивает ответы | Who compares the answers | |
 | `start.matcher.gemini` | Тілдік модель {model} | Языковая модель {model} | Language model {model} | |
 | `start.matcher.gemini_note` | Модель 20 секундта жауап бермесе, офлайн сөздік салыстырады. | Если модель не ответит за 20 секунд, сравнит офлайн-словарь. | If the model does not answer within 20 seconds, the offline word list compares. | |

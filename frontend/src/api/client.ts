@@ -3,7 +3,7 @@
 /** A request that hangs (Wi-Fi gone, laptop asleep) counts as offline after this time. */
 const TIMEOUT_MS = 8000
 /** Online the reply to an answer waits for the comparison, and the language model may take 20 seconds. */
-const ANSWER_TIMEOUT_MS = 30_000
+const ANSWER_TIMEOUT_MS = 28_000
 
 export class ApiError extends Error {
   readonly code: string

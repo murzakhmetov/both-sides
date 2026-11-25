@@ -89,8 +89,6 @@ All words are in one object, `texts.ts`, in three languages; the typed example a
 
 | What | Where |
 |---|---|
-| Team name and contact (two placeholders per language) | `closing.team`, `closing.contact` in `texts.ts` |
-| Official BCC logo, only if the organisers allow it. None is used now; a marked place for it stands in the closing section | `closing.logo` in `texts.ts`, `sections/Proof.tsx` |
 | Native check of the Russian and Kazakh texts | `texts.ts`, [kazakh-texts-for-review.md](kazakh-texts-for-review.md) |
 | "Gemini version: not yet measured" and "Next: live model check" | `status.gemini`, `status.next`, after the live check has run |
 

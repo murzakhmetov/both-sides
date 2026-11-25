@@ -136,10 +136,10 @@ export function Closing() {
           </a>
         </p>
         <p className="mt-9 text-[1.05rem] text-muted" data-reveal="2">
-          {t('closing.team')} · {t('closing.contact')}
-        </p>
-        <p className="caption mt-5 inline-block rounded-xl border border-dashed border-white/35 bg-ink/70 px-4 py-2" data-reveal="3">
-          {t('closing.logo')}
+          {t('closing.team')} ·{' '}
+          <a className="whitespace-nowrap text-text underline decoration-white/35 underline-offset-4" href={`tel:${t('closing.contact').replace(/\s/g, '')}`}>
+            {t('closing.contact')}
+          </a>
         </p>
       </div>
       <footer className="mt-24 bg-ink/85 py-7">

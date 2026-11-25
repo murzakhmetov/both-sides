@@ -397,9 +397,8 @@ What to check: meaning, spelling, polite form (сіз), terms a bank would use, 
 | `status.group.told_one_line` | екеуіне де әңгімені бір жолмен айтқан | обоим рассказали историю одной строкой | both told the story in one line | |
 | `status.limit` | Егер топ екі адамға да бір әңгіме үйретсе, салыстырудың өзі оларды өткізіп жібереді. Банк деректері, қайталанған әңгімені тексеру және адам қалуы керек. | Если банда научит обе стороны одной истории, одно сравнение их пропустит. Факты банка, проверка повторов и человек должны остаться. | If a gang coaches both people with the same story, the comparison alone lets them through. Bank facts, the repeated-story check and a person must stay in the loop. | |
 | `closing.title` | Біз екі тараптан да сұраймыз. | Мы спрашиваем обе стороны. | We ask both sides. | |
-| `closing.team` | [Команда атауы] | [Название команды] | [Team name] | |
-| `closing.contact` | [Байланыс] | [Контакт] | [Contact] | |
-| `closing.logo` | [BCC ресми логотипі, тек ұйымдастырушылар рұқсат етсе] | [Официальный логотип BCC, только если разрешат организаторы] | [Official BCC logo, only if the organisers allow it] | |
+| `closing.team` | Xtralist командасы | Команда Xtralist | Team Xtralist | |
+| `closing.contact` | +7 705 661 2373 | +7 705 661 2373 | +7 705 661 2373 | |
 | `footer.note` | ITU HACKATHON-2026 хакатонының BCC кейсіне арналған жоба. BCC-дің ресми сайты емес. | Проект хакатона ITU HACKATHON-2026 для кейса BCC. Не официальный сайт BCC. | Hackathon project for the BCC case of ITU HACKATHON-2026. Not an official BCC website. | |
 | `footer.ai` | Фондық бейнелер мен суреттер ЖИ көмегімен жасалған. Барлық адамдар мен сомалар ойдан шығарылған. | Фоновые видео и изображения созданы с помощью ИИ. Все люди и суммы вымышлены. | Background videos and pictures were made with AI. All people and amounts are invented. | |
 

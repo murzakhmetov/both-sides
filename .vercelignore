@@ -1,0 +1,11 @@
+# Only the landing page and its one function go to Vercel.
+/*
+!/api
+!/bothsides
+!/web
+!/vercel.json
+__pycache__
+
+# The page and the bundle of the app: nothing online opens them.
+/web/app.html
+/web/assets/app-*

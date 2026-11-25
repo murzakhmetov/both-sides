@@ -1,0 +1,126 @@
+/* Things that appear, and the small shapes of the other sections. */
+
+.fade {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 700ms var(--ease-calm),
+    transform 700ms var(--ease-calm),
+    visibility 0s 700ms;
+  transform: translateY(16px);
+}
+
+.fade[data-on='true'] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 700ms var(--ease-calm),
+    transform 700ms var(--ease-calm),
+    visibility 0s;
+}
+
+.cue::after {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 56px;
+  margin-top: 0.75rem;
+  background: linear-gradient(180deg, var(--color-bcc-gold-light), transparent);
+  animation: cue 2.6s var(--ease-calm) infinite;
+  transform-origin: top;
+}
+
+@keyframes cue {
+  0% {
+    transform: scaleY(0);
+  }
+  55%,
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+
+/* -- the example: two puzzle pieces and the line between them ---------------- */
+
+.seam {
+  opacity: 0;
+  box-shadow: 0 0 24px 2px color-mix(in srgb, var(--color-mismatch) 45%, transparent);
+}
+
+.seam[data-on='true'] {
+  opacity: 1;
+}
+
+.knob,
+.notch {
+  display: none;
+}
+
+@media (min-width: 48rem) {
+  .knob,
+  .notch {
+    position: absolute;
+    top: 50%;
+    display: block;
+    width: 46px;
+    height: 46px;
+    border: 1px solid rgb(255 255 255 / 0.16);
+  }
+
+  .knob {
+    right: -23px;
+    z-index: 2;
+    border-radius: 50%;
+    background: var(--color-panel-2);
+    transform: translateY(-50%);
+  }
+
+  .notch {
+    left: -23px;
+    background: var(--color-ink);
+    transform: translateY(-50%) rotate(45deg);
+  }
+}
+
+/* -- why BCC: on a wide window the words stand on the slab of the picture,
+      which is drawn with object-fit: cover ----------------------------------- */
+
+.monolith-card {
+  width: min(88vw, 27rem);
+  padding: 2rem;
+  border: 1px solid color-mix(in srgb, var(--color-bcc-gold) 55%, transparent);
+  border-radius: 22px;
+  background: rgb(17 17 19 / 0.9);
+}
+
+@media (min-aspect-ratio: 4/5) and (min-width: 64rem) {
+  .monolith-card {
+    --picture: max(100vw, 177.78vh);
+    width: calc(var(--picture) * 0.212);
+    padding: 0 calc(var(--picture) * 0.014);
+    border: 0;
+    background: none;
+  }
+}
+
+/* -- a phone held sideways --------------------------------------------------- */
+
+@media (max-height: 34rem) {
+  .nav-bar {
+    min-height: 3rem;
+    padding-top: 0.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition-duration: 1ms !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
+}

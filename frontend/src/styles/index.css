@@ -1,0 +1,266 @@
+/* Only this app: other folders of the frontend have their own styles. */
+@import "tailwindcss" source("..");
+
+/* The projector of the hall. Keep in step with SHORT_SCREEN in StagePage.tsx. */
+@custom-variant hall (@media (min-width: 1536px) and (min-height: 1060px));
+
+/*
+ * Colours. Contrast is checked by tests/test_frontend.py for both themes, so every
+ * colour that carries text is a plain six-digit token and nothing is see-through.
+ *
+ * action: the one thing to press. accent: links, focus, progress. hero: the top of a screen.
+ * credited, specialist, held, returned: statuses only. Red is for holds and denials only.
+ */
+:root {
+  --bg: #f1f4ee;
+  --surface: #ffffff;
+  --sunken: #eaefe7;
+  --line: #dde4da;
+  --line-strong: #74837a;
+  --text: #10201a;
+  --muted: #4f5f56;
+  --accent: #0b5c3b;
+  --action: #a8ea83;
+  --action-strong: #93dd69;
+  --on-action: #0c2815;
+  --hero: #0d4630;
+  --hero-deep: #08291c;
+  --hero-glow: #176a49;
+  --hero-chip: #1b5a41;
+  --on-hero: #ffffff;
+  --on-hero-muted: #cfe5d7;
+  --credited: #0a7a4a;
+  --credited-soft: #dff3e6;
+  --specialist: #945f00;
+  --specialist-soft: #fdf0d5;
+  --specialist-fill: #f2b233;
+  --on-specialist: #2b1d00;
+  --held: #b3261e;
+  --held-soft: #fdeae8;
+  --returned: #3f5560;
+  --returned-soft: #e6edf0;
+  --device: #10201a;
+  --shadow: 0 1px 2px rgb(16 32 26 / 0.04), 0 10px 30px rgb(16 32 26 / 0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0a0f0c;
+    --surface: #141b17;
+    --sunken: #1f2923;
+    --line: #2b372f;
+    --line-strong: #7f9187;
+    --text: #edf4ee;
+    --muted: #a6b6ab;
+    --accent: #8fe0b0;
+    --action: #a8ea83;
+    --action-strong: #bdf39f;
+    --on-action: #0c2815;
+    --hero: #0e3f2b;
+    --hero-deep: #08241a;
+    --hero-glow: #14573c;
+    --hero-chip: #1a5139;
+    --on-hero: #ffffff;
+    --on-hero-muted: #c6dfd0;
+    --credited: #57d694;
+    --credited-soft: #12352a;
+    --specialist: #f0b94f;
+    --specialist-soft: #33270d;
+    --specialist-fill: #f2b233;
+    --on-specialist: #2b1d00;
+    --held: #ff968d;
+    --held-soft: #3a1715;
+    --returned: #a9c0cc;
+    --returned-soft: #1f2b31;
+    --device: #3a473f;
+    --shadow: none;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-sunken: var(--sunken);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-action: var(--action);
+  --color-action-strong: var(--action-strong);
+  --color-on-action: var(--on-action);
+  --color-hero: var(--hero);
+  --color-hero-chip: var(--hero-chip);
+  --color-on-hero: var(--on-hero);
+  --color-on-hero-muted: var(--on-hero-muted);
+  --color-credited: var(--credited);
+  --color-credited-soft: var(--credited-soft);
+  --color-specialist: var(--specialist);
+  --color-specialist-soft: var(--specialist-soft);
+  --color-specialist-fill: var(--specialist-fill);
+  --color-on-specialist: var(--on-specialist);
+  --color-held: var(--held);
+  --color-held-soft: var(--held-soft);
+  --color-returned: var(--returned);
+  --color-returned-soft: var(--returned-soft);
+  --color-device: var(--device);
+  --font-sans: "Segoe UI Variable Text", "Segoe UI", Roboto, -apple-system, "SF Pro Text", system-ui, sans-serif;
+  --font-display: "Segoe UI Variable Display", "Segoe UI", Roboto, -apple-system, "SF Pro Display", system-ui, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --radius-card: 24px;
+  --radius-tile: 18px;
+  --radius-sheet: 28px;
+  --animate-enter: enter 220ms ease-out both;
+  --animate-fade: fade 180ms ease-out both;
+  --animate-pop: pop 240ms ease-out both;
+  --animate-breathe: breathe 1.8s ease-in-out infinite;
+  --animate-drain: drain 4s linear both;
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes drain {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--text);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  html[data-embedded] {
+    scrollbar-width: thin;
+  }
+
+  /* A framed phone of the demo page looks like a real one. Scrolling still works. */
+  html[data-look="framed"] {
+    scrollbar-width: none;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--bg);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.5;
+    overflow-wrap: break-word;
+  }
+
+  button,
+  select,
+  [role="button"] {
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* Headings and areas that only take the focus after a change of the screen. */
+  [tabindex="-1"]:focus-visible {
+    outline: none;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  [data-numeric] {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  .hero {
+    background:
+      radial-gradient(120% 130% at 88% -20%, var(--hero-glow) 0%, transparent 60%),
+      linear-gradient(165deg, var(--hero) 0%, var(--hero-deep) 100%);
+    color: var(--on-hero);
+  }
+
+  .hero :focus-visible {
+    outline-color: var(--action);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  [data-no-print] {
+    display: none !important;
+  }
+
+  html,
+  body {
+    background: #ffffff;
+  }
+
+  /* Dark areas would waste ink, so they print as dark text on white. */
+  :root {
+    --on-hero: #10201a;
+    --on-hero-muted: #4f5f56;
+    --hero-chip: #eaefe7;
+    --shadow: none;
+  }
+
+  .hero {
+    background: none;
+    border: 1px solid #74837a;
+  }
+
+  /* Without this, browsers leave out the colours of the bar and of the status. */
+  [data-print-color],
+  [data-print-color] * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

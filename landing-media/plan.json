@@ -1,0 +1,33 @@
+{
+  "about": "Backgrounds of the landing page, made with Google Flow: stills with Nano Banana Pro and Nano Banana 2.1 (0 credits), clips with Veo 3.1 Fast (20 credits each, 8 s, 720p). Look: matte graphite terraces, brushed gold, clear ribbed glass, in the style of the picture the user gave on 25 November 2026. The gold object is the project's own mark (a disc cut into two halves). No bank logo, no text, no faces and no real banknotes were asked for; the bills are an invented design.",
+  "colours": {
+    "bcc_green": "#00B975",
+    "bcc_gold": "#DCA262",
+    "source": "BCC brand guidebook PDF, pages 16 and 17: https://www.bcc.kz/static/bcc-kz-storage/storage/app/media/About%20the%20bank/brand/Centercredit_Brand_Assets.pdf"
+  },
+  "flow_project": "Storm clouds (the name of the dropped first direction)",
+  "items": [
+    { "id": "a-hero", "aspect": "16x9", "sources": ["GraphiteClips/scene-01.mp4"], "edit": "loop", "overlap": 0.5, "crop": [0.0, 0.0, 0.95, 0.95], "use": "hero, loop; closing" },
+    { "id": "b-freeze", "aspect": "16x9", "sources": ["GraphiteClips/scene-12.mp4"], "edit": "cut", "crop": [0.0, 0.0, 0.95, 0.95], "use": "hero after scrolling: the transfer is stopped" },
+    { "id": "c-whisper", "aspect": "16x9", "sources": ["GraphiteClips/scene-15.mp4"], "edit": "loop", "overlap": 0.6, "use": "the problem, loop" },
+    { "id": "d-chambers", "aspect": "16x9", "sources": ["GraphiteClips/scene-16.mp4"], "edit": "cut", "use": "how it works, steps 1 to 3" },
+    { "id": "e-core", "aspect": "16x9", "sources": ["GraphiteClips/scene-13.mp4"], "edit": "loop", "overlap": 0.6, "crf_webm": 41, "use": "how it works, steps 4 to 6, loop" },
+    { "id": "f-match", "aspect": "16x9", "sources": ["GraphiteClips/scene-10.mp4"], "edit": "cut", "use": "the verdict, left: match" },
+    { "id": "g-mismatch", "aspect": "16x9", "sources": ["GraphiteClips/scene-14.mp4"], "edit": "cut", "use": "the verdict, right: mismatch" },
+    { "id": "h-return", "aspect": "16x9", "sources": ["GraphiteClips/scene-17.mp4"], "edit": "cut", "crf_webm": 41, "use": "I do not know this person: the money turns back" },
+    { "id": "bg-terraces", "aspect": "16x9", "sources": ["graphite-landing-keyframes-for-background-video-loops-approved-set-one/scene-01.jpeg"], "edit": "still", "use": "the insight, the example" },
+    { "id": "bg-terraces", "aspect": "9x16", "sources": ["graphite-landing-keyframes-for-background-video-loops-approved-set-one/scene-05.jpeg"], "edit": "still", "use": "the insight, the example" },
+    { "id": "bg-line", "aspect": "16x9", "sources": ["graphite-landing-keyframes-for-background-video-loops-approved-set-four/scene-04.jpeg"], "edit": "still", "use": "the mini-demo, the honest status" },
+    { "id": "bg-monolith", "aspect": "16x9", "sources": ["graphite-landing-keyframes-for-background-video-loops-approved-set-two/scene-07.jpeg"], "edit": "still", "use": "why BCC" },
+    { "id": "bg-monolith", "aspect": "9x16", "sources": ["graphite-landing-keyframes-for-background-video-loops-approved-set-four/scene-05.jpeg"], "edit": "still", "use": "why BCC" },
+    { "id": "f-match", "aspect": "9x16", "sources": ["GraphiteClipsTall/scene-02.mp4"], "edit": "cut", "use": "the verdict: match" },
+    { "id": "g-mismatch", "aspect": "9x16", "sources": ["GraphiteClipsTall/scene-03.mp4"], "edit": "cut", "use": "the verdict: mismatch" },
+    { "id": "e-core", "aspect": "9x16", "sources": ["GraphiteClipsTall/scene-04.mp4"], "edit": "loop", "overlap": 0.6, "crf_webm": 41, "use": "how it works, loop" },
+    { "id": "b-freeze", "aspect": "9x16", "sources": ["GraphiteClipsTall/scene-05.mp4"], "edit": "cut", "end": 5.9, "use": "hero after scrolling" },
+    { "id": "c-whisper", "aspect": "9x16", "sources": ["GraphiteClipsTall/scene-06.mp4"], "edit": "loop", "overlap": 0.6, "use": "the problem, loop" },
+    { "id": "d-chambers", "aspect": "9x16", "sources": ["GraphiteClipsTall/scene-07.mp4"], "edit": "cut", "use": "how it works" },
+    { "id": "h-return", "aspect": "9x16", "sources": ["GraphiteClipsTall/scene-08.mp4"], "edit": "cut", "crf_webm": 41, "use": "I do not know this person" },
+    { "id": "a-hero", "aspect": "9x16", "sources": ["GraphiteClipsTall/scene-09.mp4"], "edit": "loop", "overlap": 0.5, "use": "hero, loop; closing" },
+    { "id": "bg-line", "aspect": "9x16", "sources": ["graphite-landing-keyframes-for-background-video-loops-approved-set-seven/scene-01.jpeg"], "edit": "still", "use": "the mini-demo, the honest status" }
+  ]
+}

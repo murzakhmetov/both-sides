@@ -1,0 +1,22 @@
+[project]
+name = "both-sides"
+version = "0.1.0"
+description = "Anti-fraud prototype: the bank asks both people about a stopped transfer and compares their answers"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+ai = ["google-genai>=3.6"]
+dev = ["pytest>=8", "pytest-cov>=5"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.coverage.run]
+source = ["bothsides"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true

@@ -1,0 +1,26 @@
+{
+  "about": "Shared test cases of the offline matcher plus the content rule, with calm bank facts. Any port of the matcher must give the same verdicts. verdict: match = released, specialist = goes to a person.",
+  "cases": [
+    { "id": "scene1-brother-rent", "receiver": "ағам пәтер жалдау ақысының жартысын жіберді", "sender": "Брату, моя половина аренды квартиры", "verdict": "match" },
+    { "id": "scene1-plain-letters", "receiver": "агам патер жалдау акысынын жартысын жиберди", "sender": "брату моя половина аренды квартиры", "verdict": "match" },
+    { "id": "scene2-sister-story", "receiver": "друг вернул долг", "sender": "сестре на лечение", "verdict": "specialist" },
+    { "id": "half-of-different-things", "receiver": "половина аренды", "sender": "половина за лечение", "verdict": "specialist" },
+    { "id": "nonsense-latin", "receiver": "asdf qwer", "sender": "asdf qwer", "verdict": "specialist" },
+    { "id": "nonsense-thanks", "receiver": "спасибо большое", "sender": "спасибо большое", "verdict": "specialist" },
+    { "id": "nonsense-kazakh-thanks", "receiver": "бәрі жақсы рахмет", "sender": "бәрі жақсы рахмет", "verdict": "specialist" },
+    { "id": "one-word-each", "receiver": "аренда", "sender": "аренда", "verdict": "specialist" },
+    { "id": "bare-debt", "receiver": "мой долг", "sender": "мой долг", "verdict": "specialist" },
+    { "id": "friend-debt-ru", "receiver": "друг вернул долг за обед", "sender": "другу вернул долг за обед", "verdict": "match" },
+    { "id": "mother-son-tuition", "receiver": "мама прислала на учебу", "sender": "сыну на учебу в университет", "verdict": "match" },
+    { "id": "mother-son-tuition-kk-ru", "receiver": "анам оқуыма жіберді", "sender": "сыну на оплату учебы", "verdict": "match" },
+    { "id": "birthday-gift-mix", "receiver": "досым туған күніме сыйлық", "sender": "другу подарок на день рождения", "verdict": "match" },
+    { "id": "money-is-not-birthday", "receiver": "деньги от друга", "sender": "другу день рождения подарок", "verdict": "specialist" },
+    { "id": "long-is-not-debt", "receiver": "долго ждал друга", "sender": "другу вернул долг", "verdict": "specialist" },
+    { "id": "same-person-other-purpose", "receiver": "мама на продукты", "sender": "сыну на лекарства", "verdict": "specialist" },
+    { "id": "relation-conflict-same-reason", "receiver": "сестра вернула долг", "sender": "другу вернул долг", "verdict": "specialist" },
+    { "id": "name-and-amount-only", "receiver": "Данияр отправил 90000", "sender": "Брату, моя половина аренды квартиры", "verdict": "specialist" },
+    { "id": "half-on-one-side", "receiver": "брат прислал половину за аренду", "sender": "брату моя половина", "verdict": "match" },
+    { "id": "every-reason-listed", "receiver": "вернул долг за аренду лечение продукты подарок учебу", "sender": "сестре на лечение", "verdict": "specialist" },
+    { "id": "spouse-food", "receiver": "муж скинул на продукты", "sender": "жене на продукты", "verdict": "match" }
+  ]
+}

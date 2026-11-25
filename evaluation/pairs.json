@@ -1,0 +1,798 @@
+{
+ "label": "simulated pairs",
+ "origin": "Written by three independent language-model authors who could not see the matcher, its lexicon or its weights; labels checked by a fourth. Not collected from real people.",
+ "pairs": [
+  {
+   "id": "city-1",
+   "group": "honest",
+   "receiver": "сестра скинула за квартиру",
+   "sender": "брату скинула за аренду за март",
+   "languages": "ru/ru",
+   "scenario": "Sister pays brother's share of rent"
+  },
+  {
+   "id": "city-2",
+   "group": "honest",
+   "receiver": "анам акша салды коммуналка ушин",
+   "sender": "улыма скинула на коммуналку",
+   "languages": "kk/ru",
+   "scenario": "Mother sends son money for utilities"
+  },
+  {
+   "id": "city-3",
+   "group": "honest",
+   "receiver": "друг скинул за ужин в субботу",
+   "sender": "другу перекинула за ужин в кафе",
+   "languages": "ru/ru",
+   "scenario": "Friend repays share of weekend dinner"
+  },
+  {
+   "id": "city-4",
+   "group": "honest",
+   "receiver": "кузен той акшасы",
+   "sender": "двоюродному на той подарок",
+   "languages": "mix/ru",
+   "scenario": "Wedding gift to cousin"
+  },
+  {
+   "id": "city-5",
+   "group": "honest",
+   "receiver": "долг отдала",
+   "sender": "вернул долг",
+   "languages": "ru/ru",
+   "scenario": "Repayment of old debt, very short wording"
+  },
+  {
+   "id": "city-6",
+   "group": "honest",
+   "receiver": "карызын кайтарды",
+   "sender": "карызды кайтардым",
+   "languages": "kk/kk",
+   "scenario": "Returning a loan between friends"
+  },
+  {
+   "id": "city-7",
+   "group": "honest",
+   "receiver": "репетитор, за уроки английского",
+   "sender": "переводила за занятия english",
+   "languages": "ru/ru",
+   "scenario": "Parent pays English tutor"
+  },
+  {
+   "id": "city-8",
+   "group": "honest",
+   "receiver": "bro for the pizza lol",
+   "sender": "to my friend for pizza",
+   "languages": "en/en",
+   "scenario": "Friend pays for shared pizza"
+  },
+  {
+   "id": "city-10",
+   "group": "honest",
+   "receiver": "апа акша жиберди оку ушин",
+   "sender": "сестре на учебу скинула",
+   "languages": "mix/ru",
+   "scenario": "Older sister pays for younger sister's study"
+  },
+  {
+   "id": "city-11",
+   "group": "honest",
+   "receiver": "мама за поездку в лагерь",
+   "sender": "маме за лагерь детям",
+   "languages": "ru/ru",
+   "scenario": "Money for kids' summer camp trip"
+  },
+  {
+   "id": "city-12",
+   "group": "honest",
+   "receiver": "агам жибергени той",
+   "sender": "агама тойга салдым",
+   "languages": "kk/kk",
+   "scenario": "Brother sends money for a family celebration"
+  },
+  {
+   "id": "city-13",
+   "group": "honest",
+   "receiver": "за работу типа",
+   "sender": "коллеге за работу",
+   "languages": "ru/ru",
+   "scenario": "Coworker payment for shared job, vague"
+  },
+  {
+   "id": "city-14",
+   "group": "honest",
+   "receiver": "брат, абонемент в зал",
+   "sender": "брату за абонемент в зал",
+   "languages": "ru/ru",
+   "scenario": "Brother pays for gym membership"
+  },
+  {
+   "id": "city-15",
+   "group": "stranger",
+   "receiver": "наверное от знакомого за товар с олх",
+   "sender": "оплата за предоплату, оператор сказал перевести",
+   "languages": "ru/ru",
+   "scenario": "Mule gets money from a scam victim paying an online seller"
+  },
+  {
+   "id": "city-16",
+   "group": "stranger",
+   "receiver": "Айбек, за аренду машины",
+   "sender": "за страховку, следователь сказал перевести",
+   "languages": "ru/ru",
+   "scenario": "Victim pays fake police-investigator story, receiver guesses a plausible reason"
+  },
+  {
+   "id": "city-17",
+   "group": "stranger",
+   "receiver": "не знаю его, за работу курьером",
+   "sender": "оплата за подработку по объявлению",
+   "languages": "ru/ru",
+   "scenario": "Victim pays fake job deposit, mule guesses courier job"
+  },
+  {
+   "id": "city-19",
+   "group": "stranger",
+   "receiver": "за перевод от незнакомца, ошибка наверное",
+   "sender": "ошибочно, просили вернуть на карту",
+   "languages": "ru/ru",
+   "scenario": "Mistaken payment that sender was told to return to a scammer card"
+  },
+  {
+   "id": "city-20",
+   "group": "stranger",
+   "receiver": "какой-то Данияр скинул за курс",
+   "sender": "курс по трейдингу, инвестиции в криптовалюту",
+   "languages": "ru/ru",
+   "scenario": "Victim pays fake crypto trading course, mule guesses course"
+  },
+  {
+   "id": "city-21",
+   "group": "stranger",
+   "receiver": "не знаю кто, за сайт",
+   "sender": "за аренду квартиры посуточно, хозяин попросил",
+   "languages": "ru/ru",
+   "scenario": "Victim pays fake rental deposit, receiver names a website"
+  },
+  {
+   "id": "city-22",
+   "group": "other_transfer",
+   "receiver": "мама за продукты",
+   "sender": "маме за лекарства",
+   "languages": "ru/ru",
+   "scenario": "Same mother, different transfers: groceries vs medicine"
+  },
+  {
+   "id": "city-23",
+   "group": "other_transfer",
+   "receiver": "за долг 50к",
+   "sender": "за аренду машины",
+   "languages": "ru/ru",
+   "scenario": "Debt repayment vs car rental payment between same people"
+  },
+  {
+   "id": "city-24",
+   "group": "other_transfer",
+   "receiver": "перевод за ноутбук",
+   "sender": "за телефон на айфон",
+   "languages": "ru/ru",
+   "scenario": "Laptop purchase vs phone purchase"
+  },
+  {
+   "id": "city-25",
+   "group": "other_transfer",
+   "receiver": "за свадьбу друга",
+   "sender": "за свадебное платье сестре",
+   "languages": "ru/ru",
+   "scenario": "Wedding gift to friend vs dress for sister"
+  },
+  {
+   "id": "city-26",
+   "group": "other_transfer",
+   "receiver": "за отпуск, на море",
+   "sender": "за квартиру за ноябрь",
+   "languages": "ru/ru",
+   "scenario": "Vacation contribution vs monthly rent"
+  },
+  {
+   "id": "city-27",
+   "group": "other_transfer",
+   "receiver": "за сайт фрилансер",
+   "sender": "коллеге за курсовую",
+   "languages": "ru/ru",
+   "scenario": "Freelance website payment vs coursework help"
+  },
+  {
+   "id": "city-28",
+   "group": "other_transfer",
+   "receiver": "подарок на день рождения",
+   "sender": "на садик сыну, оплата за месяц",
+   "languages": "ru/ru",
+   "scenario": "Birthday gift received vs kindergarten fee sent"
+  },
+  {
+   "id": "city-29",
+   "group": "told_one_line",
+   "receiver": "за ремонт квартиры брату",
+   "sender": "скинула мастеру за ремонт",
+   "languages": "ru/ru",
+   "scenario": "Cover story remont; receiver says brother, sender says master (relation and direction differ)"
+  },
+  {
+   "id": "city-30",
+   "group": "told_one_line",
+   "receiver": "продал машину, покупатель скинул",
+   "sender": "за машину купила у знакомого",
+   "languages": "ru/ru",
+   "scenario": "Cover story car payment; direction flipped (buyer vs seller)"
+  },
+  {
+   "id": "city-31",
+   "group": "told_one_line",
+   "receiver": "оплата курсов от подруги",
+   "sender": "подруге на курсы",
+   "languages": "ru/ru",
+   "scenario": "Cover story English course; main reason agrees, wording differs"
+  },
+  {
+   "id": "city-32",
+   "group": "told_one_line",
+   "receiver": "квартирант скинул за аренду",
+   "sender": "сдаю квартиру, аренда за ноябрь",
+   "languages": "mix/ru",
+   "scenario": "Cover story rent; receiver as tenant, sender as landlord"
+  },
+  {
+   "id": "city-33",
+   "group": "told_one_line",
+   "receiver": "батя перевел на кредит",
+   "sender": "отцу на кредит скинул",
+   "languages": "ru/ru",
+   "scenario": "Cover story loan; same reason, relation slightly different"
+  },
+  {
+   "id": "city-34",
+   "group": "told_one_line",
+   "receiver": "вернул долг одногруппника",
+   "sender": "одногруппнику в долг дала",
+   "languages": "ru/ru",
+   "scenario": "Cover story loan; receiver frames as repayment, sender as lending"
+  },
+  {
+   "id": "regions-1",
+   "group": "honest",
+   "receiver": "мама тойга аударды",
+   "sender": "улыма тойга деп аударды",
+   "languages": "kk/kk",
+   "scenario": "Mother sends son money for a wedding toi."
+  },
+  {
+   "id": "regions-2",
+   "group": "honest",
+   "receiver": "мама за квартиру",
+   "sender": "балама патерге акша",
+   "languages": "mix/ru",
+   "scenario": "Mother sends son money for apartment rent."
+  },
+  {
+   "id": "regions-3",
+   "group": "honest",
+   "receiver": "апа за курс оплата",
+   "sender": "синлима окуга акша",
+   "languages": "kk/ru",
+   "scenario": "Sister pays tuition for her younger sibling's course."
+  },
+  {
+   "id": "regions-5",
+   "group": "honest",
+   "receiver": "карыз кайтарды",
+   "sender": "агама карызын",
+   "languages": "kk/kk",
+   "scenario": "Nephew repays brother's old debt."
+  },
+  {
+   "id": "regions-6",
+   "group": "honest",
+   "receiver": "за забор",
+   "sender": "за стройку забора",
+   "languages": "ru/ru",
+   "scenario": "Payment for fence construction, vague wording."
+  },
+  {
+   "id": "regions-7",
+   "group": "honest",
+   "receiver": "аска аударды",
+   "sender": "аска жиберди",
+   "languages": "kk/kk",
+   "scenario": "Money sent for a funeral memorial meal as (as)."
+  },
+  {
+   "id": "regions-8",
+   "group": "honest",
+   "receiver": "на курбан",
+   "sender": "на барана курбан",
+   "languages": "mix/ru",
+   "scenario": "Money for Kurban sacrifice animal."
+  },
+  {
+   "id": "regions-9",
+   "group": "honest",
+   "receiver": "мектепке жарна",
+   "sender": "баламнын мектепке акша",
+   "languages": "kk/ru",
+   "scenario": "Parent pays school contribution for child."
+  },
+  {
+   "id": "regions-10",
+   "group": "honest",
+   "receiver": "за машину папа",
+   "sender": "улыма машина акшасы",
+   "languages": "kk/ru",
+   "scenario": "Father sends son money from selling a car."
+  },
+  {
+   "id": "regions-11",
+   "group": "honest",
+   "receiver": "за ремонт крыши",
+   "sender": "на крышу сыну",
+   "languages": "ru/ru",
+   "scenario": "Money for roof repair sent to son."
+  },
+  {
+   "id": "regions-12",
+   "group": "honest",
+   "receiver": "аванс за месяц",
+   "sender": "аванс аударды ини",
+   "languages": "ru/kk",
+   "scenario": "Advance salary payment from older brother to younger brother."
+  },
+  {
+   "id": "regions-13",
+   "group": "honest",
+   "receiver": "анама дари",
+   "sender": "анама дари акша",
+   "languages": "kk/kk",
+   "scenario": "Son sends mother money for medicine."
+  },
+  {
+   "id": "regions-14",
+   "group": "honest",
+   "receiver": "за дрова",
+   "sender": "дрова за зиму",
+   "languages": "ru/ru",
+   "scenario": "Money for firewood for winter."
+  },
+  {
+   "id": "regions-15",
+   "group": "stranger",
+   "receiver": "не знаю его наверное ошибка",
+   "sender": "безопасный счет сказали перевести срочно",
+   "languages": "ru/ru",
+   "scenario": "Mule does not know sender; victim was told by fake bank employee to move money to a safe account."
+  },
+  {
+   "id": "regions-16",
+   "group": "stranger",
+   "receiver": "айдар ну за работу наверно",
+   "sender": "инвестиция по совету брокера в криптовалюту",
+   "languages": "ru/ru",
+   "scenario": "Mule guesses work payment; victim paid a fake investment broker."
+  },
+  {
+   "id": "regions-17",
+   "group": "stranger",
+   "receiver": "танымайтын адам карта арқылы",
+   "sender": "родственник попросил помочь с оплатой срочно сказал",
+   "languages": "mix/kk",
+   "scenario": "Mule transfer from unknown person; victim fell for fake relative emergency."
+  },
+  {
+   "id": "regions-18",
+   "group": "stranger",
+   "receiver": "нурлан за товар наверное",
+   "sender": "за машину по объявлению продавец нурлан",
+   "languages": "ru/ru",
+   "scenario": "Mule guesses goods; victim paid for a car from a fake listing."
+  },
+  {
+   "id": "regions-19",
+   "group": "stranger",
+   "receiver": "не знаю кто, за курс бухгалтерии",
+   "sender": "ошибочно выслал на карту сумма не моя",
+   "languages": "ru/ru",
+   "scenario": "Honest mistaken payment to a stranger's card; receiver makes up a reason."
+  },
+  {
+   "id": "regions-20",
+   "group": "stranger",
+   "receiver": "мадина за аренду офиса",
+   "sender": "залог за квартиру посоветовали перевести",
+   "languages": "ru/ru",
+   "scenario": "Mule has only the first name; victim was told to pay a rental deposit."
+  },
+  {
+   "id": "regions-21",
+   "group": "stranger",
+   "receiver": "таныс емес сказали за работу",
+   "sender": "оплата за работу от компании через приложение",
+   "languages": "mix/ru",
+   "scenario": "Unknown sender per receiver; victim paid a fake job deposit."
+  },
+  {
+   "id": "regions-22",
+   "group": "other_transfer",
+   "receiver": "мама за свадьбу сестры",
+   "sender": "за мясо на курбан",
+   "languages": "kk/ru",
+   "scenario": "Receiver thinks of wedding money; sender sent Kurban meat money, different transfer."
+  },
+  {
+   "id": "regions-23",
+   "group": "other_transfer",
+   "receiver": "за квартиру ноябрь",
+   "sender": "за интернет и свет",
+   "languages": "ru/ru",
+   "scenario": "Both are utility or rent but different months and bills."
+  },
+  {
+   "id": "regions-24",
+   "group": "other_transfer",
+   "receiver": "за машину остатка",
+   "sender": "за ремонт холодильника",
+   "languages": "ru/ru",
+   "scenario": "Car balance versus fridge repair, different reasons."
+  },
+  {
+   "id": "regions-25",
+   "group": "other_transfer",
+   "receiver": "дрова ауылга",
+   "sender": "дрова за прошлую зиму уже отдал",
+   "languages": "mix/ru",
+   "scenario": "Receiver means new firewood order; sender means repaying last winter's firewood."
+  },
+  {
+   "id": "regions-26",
+   "group": "other_transfer",
+   "receiver": "за той сестры",
+   "sender": "за той брата",
+   "languages": "kk/kk",
+   "scenario": "Both mention a wedding toi but for different siblings."
+  },
+  {
+   "id": "regions-27",
+   "group": "other_transfer",
+   "receiver": "за огород семена",
+   "sender": "балалар кружок акысы",
+   "languages": "kk/kk",
+   "scenario": "Garden seeds versus children's club fee, different transfers."
+  },
+  {
+   "id": "regions-28",
+   "group": "other_transfer",
+   "receiver": "за такси долг",
+   "sender": "за курьера доставку",
+   "languages": "ru/ru",
+   "scenario": "Taxi debt versus courier delivery payment."
+  },
+  {
+   "id": "regions-29",
+   "group": "told_one_line",
+   "receiver": "брат попросил за ремонт машины",
+   "sender": "на ремонт машины брату отправил",
+   "languages": "ru/ru",
+   "scenario": "Gang cover story car repair; both sides agree, details differ slightly."
+  },
+  {
+   "id": "regions-30",
+   "group": "told_one_line",
+   "receiver": "он мне за курсы",
+   "sender": "я ему за курсы",
+   "languages": "ru/ru",
+   "scenario": "Cover story courses; direction written from opposite viewpoints."
+  },
+  {
+   "id": "regions-31",
+   "group": "told_one_line",
+   "receiver": "залог за квартиру друг",
+   "sender": "аренда квартиры залог",
+   "languages": "ru/ru",
+   "scenario": "Cover story apartment deposit; receiver says friend, sender says rent."
+  },
+  {
+   "id": "regions-32",
+   "group": "told_one_line",
+   "receiver": "за товар из инсты",
+   "sender": "купил у него товар в инсте",
+   "languages": "ru/ru",
+   "scenario": "Cover story Instagram goods purchase; direction and wording differ."
+  },
+  {
+   "id": "regions-33",
+   "group": "told_one_line",
+   "receiver": "помощь брату на карту",
+   "sender": "помог двоюродному",
+   "languages": "kk/ru",
+   "scenario": "Cover story help to relative; brother versus cousin mismatch."
+  },
+  {
+   "id": "regions-34",
+   "group": "told_one_line",
+   "receiver": "долг по кредиту отдал",
+   "sender": "погасить займ за друга",
+   "languages": "ru/ru",
+   "scenario": "Cover story loan repayment; loan versus friend's debt."
+  },
+  {
+   "id": "traders-1",
+   "group": "honest",
+   "receiver": "от мамы ученика за математику за март",
+   "sender": "репетитору за март сын математика",
+   "languages": "ru/ru",
+   "scenario": "parent pays tutor for math lessons in March"
+  },
+  {
+   "id": "traders-2",
+   "group": "honest",
+   "receiver": "брат скинул за аренду гаража",
+   "sender": "сестре за гараж в этом месяце",
+   "languages": "ru/ru",
+   "scenario": "brother pays sister for garage rent"
+  },
+  {
+   "id": "traders-3",
+   "group": "honest",
+   "receiver": "жалақы за смену грузчик",
+   "sender": "Серику грузчику за смену 12к",
+   "languages": "kk/ru",
+   "scenario": "employer pays loader for one shift"
+  },
+  {
+   "id": "traders-4",
+   "group": "honest",
+   "receiver": "за ремонт крана сантехник",
+   "sender": "сантехнику за кран на кухне",
+   "languages": "ru/ru",
+   "scenario": "tenant pays plumber for kitchen tap repair"
+  },
+  {
+   "id": "traders-5",
+   "group": "honest",
+   "receiver": "Ержан за шашлык на выезд",
+   "sender": "за шашлык ребятам на выезд",
+   "languages": "mix/ru",
+   "scenario": "split cost of barbecue trip with friends"
+  },
+  {
+   "id": "traders-6",
+   "group": "honest",
+   "receiver": "аванс за сайт",
+   "sender": "оплата сайта первый платеж",
+   "languages": "ru/ru",
+   "scenario": "client pays web developer advance"
+  },
+  {
+   "id": "traders-7",
+   "group": "honest",
+   "receiver": "за вчера",
+   "sender": "вчера за то самое",
+   "languages": "ru/ru",
+   "scenario": "vague payment for yesterday's thing, same transfer"
+  },
+  {
+   "id": "traders-8",
+   "group": "honest",
+   "receiver": "мама за телефон 40к",
+   "sender": "ұлыма 40к на телефон",
+   "languages": "kk/ru",
+   "scenario": "mother sends son money for a phone"
+  },
+  {
+   "id": "traders-9",
+   "group": "honest",
+   "receiver": "заказ пирожков в садик",
+   "sender": "за пирожки для садика",
+   "languages": "ru/ru",
+   "scenario": "kindergarten parent pays for baked goods"
+  },
+  {
+   "id": "traders-10",
+   "group": "honest",
+   "receiver": "за сено от Арсена",
+   "sender": "Тимуру за сено оплатил",
+   "languages": "ru/ru",
+   "scenario": "buyer pays seller for hay"
+  },
+  {
+   "id": "traders-11",
+   "group": "honest",
+   "receiver": "за курсы английского от мамы Айгерим",
+   "sender": "на английский дочке курсы",
+   "languages": "mix/ru",
+   "scenario": "mother pays English course for daughter"
+  },
+  {
+   "id": "traders-12",
+   "group": "honest",
+   "receiver": "взнос футбол от родителей",
+   "sender": "взнос в команду футбол за месяц",
+   "languages": "ru/ru",
+   "scenario": "parent pays monthly football club fee"
+  },
+  {
+   "id": "traders-13",
+   "group": "honest",
+   "receiver": "за вечеринку в кафе коллеги",
+   "sender": "скинул в кафе за наш др",
+   "languages": "ru/ru",
+   "scenario": "colleague pays cafe for birthday party"
+  },
+  {
+   "id": "traders-14",
+   "group": "honest",
+   "receiver": "ремонт тачки от Азамата",
+   "sender": "за ремонт тачки Азамату",
+   "languages": "ru/ru",
+   "scenario": "car owner pays mechanic for repair"
+  },
+  {
+   "id": "traders-15",
+   "group": "stranger",
+   "receiver": "не знаю кто, наверное за заказ с olx",
+   "sender": "оплата залога за квартиру по объявлению",
+   "languages": "mix/ru",
+   "scenario": "victim pays fake rental deposit, mule does not know sender"
+  },
+  {
+   "id": "traders-16",
+   "group": "stranger",
+   "receiver": "не знаю таких, возможно за такси",
+   "sender": "перевод на безопасный счет по звонку из банка",
+   "languages": "ru/ru",
+   "scenario": "victim sent money under fake bank call story"
+  },
+  {
+   "id": "traders-17",
+   "group": "stranger",
+   "receiver": "за аренду машины, ну ладно",
+   "sender": "предоплата за машину на олх, продавца не видела",
+   "languages": "ru/ru",
+   "scenario": "victim prepays for car found online, mule receives"
+  },
+  {
+   "id": "traders-18",
+   "group": "stranger",
+   "receiver": "за переводы для друга, попросили",
+   "sender": "доплата за посылку с ali курьер попросил",
+   "languages": "ru/ru",
+   "scenario": "victim pays fake courier fee, receiver is mule"
+  },
+  {
+   "id": "traders-19",
+   "group": "stranger",
+   "receiver": "сестра попросила перевести, ок",
+   "sender": "штраф за подписку, сказали закрыть дело",
+   "languages": "ru/ru",
+   "scenario": "victim pays fake fine, receiver knows nothing"
+  },
+  {
+   "id": "traders-20",
+   "group": "stranger",
+   "receiver": "не знаю, за работу наверное",
+   "sender": "первый взнос за оборудование для удаленной работы",
+   "languages": "ru/ru",
+   "scenario": "victim pays fake remote job deposit"
+  },
+  {
+   "id": "traders-21",
+   "group": "stranger",
+   "receiver": "наверное за долг брату, не знаю его",
+   "sender": "ошибочно вместо другого Азамата, извините",
+   "languages": "ru/ru",
+   "scenario": "mistaken payment to wrong Azamat, receiver guesses a debt"
+  },
+  {
+   "id": "traders-22",
+   "group": "other_transfer",
+   "receiver": "за квартиру за ноябрь",
+   "sender": "за квартиру за октябрь",
+   "languages": "ru/ru",
+   "scenario": "same tenant pays rent but for different months"
+  },
+  {
+   "id": "traders-23",
+   "group": "other_transfer",
+   "receiver": "за ремонт окна",
+   "sender": "за ремонт крыши дачи",
+   "languages": "ru/ru",
+   "scenario": "builder paid for two different repair jobs"
+  },
+  {
+   "id": "traders-24",
+   "group": "other_transfer",
+   "receiver": "за торт на др",
+   "sender": "за колонку с алиэкспресс",
+   "languages": "ru/ru",
+   "scenario": "cake payment vs online purchase"
+  },
+  {
+   "id": "traders-25",
+   "group": "other_transfer",
+   "receiver": "за стрижку",
+   "sender": "подруге за маникюр",
+   "languages": "ru/ru",
+   "scenario": "barber payment vs friend's manicure payment"
+  },
+  {
+   "id": "traders-26",
+   "group": "other_transfer",
+   "receiver": "ата ақша 15 мың за ремонт",
+   "sender": "15к тренеру за абонемент",
+   "languages": "kk/ru",
+   "scenario": "repair payment vs gym membership payment, same amount"
+  },
+  {
+   "id": "traders-27",
+   "group": "other_transfer",
+   "receiver": "вернул 10к за обед",
+   "sender": "10к за бензин",
+   "languages": "ru/ru",
+   "scenario": "debt repayment for lunch vs fuel money, same amount"
+  },
+  {
+   "id": "traders-28",
+   "group": "other_transfer",
+   "receiver": "за сено",
+   "sender": "за дрова на зиму",
+   "languages": "ru/ru",
+   "scenario": "hay payment vs firewood payment, different goods"
+  },
+  {
+   "id": "traders-29",
+   "group": "told_one_line",
+   "receiver": "брат операция спасибо бро",
+   "sender": "брату на операцию перевела",
+   "languages": "ru/ru",
+   "scenario": "cover story help for surgery, both sides coached"
+  },
+  {
+   "id": "traders-30",
+   "group": "told_one_line",
+   "receiver": "аванс за ремонт квартиры",
+   "sender": "ремонт квартиры мастеру предоплата",
+   "languages": "ru/ru",
+   "scenario": "cover story apartment renovation prepayment"
+  },
+  {
+   "id": "traders-31",
+   "group": "told_one_line",
+   "receiver": "вернул долг другу до зп",
+   "sender": "дал в долг до зарплаты",
+   "languages": "ru/ru",
+   "scenario": "cover story loan until salary, direction described from both sides"
+  },
+  {
+   "id": "traders-32",
+   "group": "told_one_line",
+   "receiver": "шины на машину брат",
+   "sender": "за шины на машину, брату",
+   "languages": "ru/ru",
+   "scenario": "cover story tyres for car"
+  },
+  {
+   "id": "traders-33",
+   "group": "told_one_line",
+   "receiver": "на др подарок от тёти",
+   "sender": "тёте на др подарок",
+   "languages": "ru/ru",
+   "scenario": "cover story birthday gift, relation direction differs"
+  },
+  {
+   "id": "traders-34",
+   "group": "told_one_line",
+   "receiver": "за учебу сын оплата",
+   "sender": "за универ дочери скинула",
+   "languages": "mix/ru",
+   "scenario": "cover story tuition payment, child and parent relation differs"
+  }
+ ]
+}

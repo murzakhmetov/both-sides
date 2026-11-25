@@ -1,0 +1,595 @@
+{
+ "about": "Backgrounds of the landing page, made with Google Flow: stills with Nano Banana Pro and Nano Banana 2.1 (0 credits), clips with Veo 3.1 Fast (20 credits each, 8 s, 720p). Look: matte graphite terraces, brushed gold, clear ribbed glass, in the style of the picture the user gave on 25 November 2026. The gold object is the project's own mark (a disc cut into two halves). No bank logo, no text, no faces and no real banknotes were asked for; the bills are an invented design.",
+ "colours": {
+  "bcc_green": "#00B975",
+  "bcc_gold": "#DCA262",
+  "source": "BCC brand guidebook PDF, pages 16 and 17: https://www.bcc.kz/static/bcc-kz-storage/storage/app/media/About%20the%20bank/brand/Centercredit_Brand_Assets.pdf"
+ },
+ "flow_project": "Storm clouds (the name of the dropped first direction)",
+ "files": [
+  {
+   "id": "a-hero",
+   "aspect": "16x9",
+   "use": "hero, loop; closing",
+   "edit": "loop",
+   "seconds": 7.25,
+   "sources": [
+    "GraphiteClips/scene-01.mp4"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/a-hero-16x9.mp4",
+     "bytes": 818469,
+     "sha256": "5b9a8bc7c529aa7de31ec410b1a56431f9a356ebe823f65d8245e04d6dc31ea4"
+    },
+    {
+     "file": "public/assets/landing/a-hero-16x9.webm",
+     "bytes": 760950,
+     "sha256": "4c6c7d6f9444d5a2316d370b50cb8f2ec8cc1390be3140b046aeb8b11fa4423e"
+    },
+    {
+     "file": "public/assets/landing/a-hero-16x9.webp",
+     "bytes": 44762,
+     "sha256": "270f0870da4abb63f5124ab3898cf632f71d1039dad2834ca11c57c41647a804"
+    }
+   ]
+  },
+  {
+   "id": "b-freeze",
+   "aspect": "16x9",
+   "use": "hero after scrolling: the transfer is stopped",
+   "edit": "cut",
+   "seconds": 7.75,
+   "sources": [
+    "GraphiteClips/scene-12.mp4"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/b-freeze-16x9.mp4",
+     "bytes": 865477,
+     "sha256": "b241d37da7985b0f6820b982b8461bf2e6e1ecb9a71dfd2bd2f7ec0a8fd55b5e"
+    },
+    {
+     "file": "public/assets/landing/b-freeze-16x9.webm",
+     "bytes": 753266,
+     "sha256": "89352f63fc3555ea1018835c343f998315b149293556c62046d6b85f536da90e"
+    },
+    {
+     "file": "public/assets/landing/b-freeze-16x9.webp",
+     "bytes": 41038,
+     "sha256": "88a1ec5c6cc7315106693c06ff19adf4a94c2810516f793ee19e37e8876a0ad1"
+    },
+    {
+     "file": "public/assets/landing/b-freeze-16x9-end.webp",
+     "bytes": 38076,
+     "sha256": "42a7052dfb0c6162c96816312abca9e1cc8d07c67ce8204bc2a74ca25fd17519"
+    }
+   ]
+  },
+  {
+   "id": "c-whisper",
+   "aspect": "16x9",
+   "use": "the problem, loop",
+   "edit": "loop",
+   "seconds": 7.2,
+   "sources": [
+    "GraphiteClips/scene-15.mp4"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/c-whisper-16x9.mp4",
+     "bytes": 392264,
+     "sha256": "b4927710605bc0d12b28d5e8b9f442f60a6535b0b0d3bf9cf6a2f126c2608d2e"
+    },
+    {
+     "file": "public/assets/landing/c-whisper-16x9.webm",
+     "bytes": 200973,
+     "sha256": "4a315fe54b513615d7347d410d00882fa799ed538b20838ee347775457e302d7"
+    },
+    {
+     "file": "public/assets/landing/c-whisper-16x9.webp",
+     "bytes": 21650,
+     "sha256": "8dc3b967ac9da24afd3bb96accf8fbcd0f472a489778c708bc569a3bf48b416d"
+    }
+   ]
+  },
+  {
+   "id": "d-chambers",
+   "aspect": "16x9",
+   "use": "how it works, steps 1 to 3",
+   "edit": "cut",
+   "seconds": 7.75,
+   "sources": [
+    "GraphiteClips/scene-16.mp4"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/d-chambers-16x9.mp4",
+     "bytes": 526599,
+     "sha256": "5ca12d230ead9b210ab2bb52b74c3723feb07525beb877ee04b5a7731d8d82ff"
+    },
+    {
+     "file": "public/assets/landing/d-chambers-16x9.webm",
+     "bytes": 423066,
+     "sha256": "13879e0f67602aec2d340e262a1fad52734941eb1a9b9246426137a93d92ebf8"
+    },
+    {
+     "file": "public/assets/landing/d-chambers-16x9.webp",
+     "bytes": 25452,
+     "sha256": "51029a1e1d8770e71b63c8fea023fb8990c7c66bd6cb06db5d0857225830ec9e"
+    },
+    {
+     "file": "public/assets/landing/d-chambers-16x9-end.webp",
+     "bytes": 25604,
+     "sha256": "b8423f22d6bf6055bb098db4308c120fc00e35452a4d7ef21363d06b36f40f4f"
+    }
+   ]
+  },
+  {
+   "id": "e-core",
+   "aspect": "16x9",
+   "use": "how it works, steps 4 to 6, loop",
+   "edit": "loop",
+   "seconds": 7.2,
+   "sources": [
+    "GraphiteClips/scene-13.mp4"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/e-core-16x9.mp4",
+     "bytes": 974747,
+     "sha256": "f8962aa690b461fafcc367bba1e1f2bc5f21152506fdac17b8ae7924788c2375"
+    },
+    {
+     "file": "public/assets/landing/e-core-16x9.webm",
+     "bytes": 817812,
+     "sha256": "6a97a01f22cabb9be1d725bba0c1ebb32da61814f5a0f7469ddbcef50373c3dd"
+    },
+    {
+     "file": "public/assets/landing/e-core-16x9.webp",
+     "bytes": 28746,
+     "sha256": "08f83377db3b6af43eb88ebe08359ae7e659008bda0645c450bb6eb7a98d2de9"
+    }
+   ]
+  },
+  {
+   "id": "f-match",
+   "aspect": "16x9",
+   "use": "the verdict, left: match",
+   "edit": "cut",
+   "seconds": 7.75,
+   "sources": [
+    "GraphiteClips/scene-10.mp4"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/f-match-16x9.mp4",
+     "bytes": 812216,
+     "sha256": "229635a890d0b532de2542fe1cb5ce35dd5dffb917734154bc9b819f5f203ea6"
+    },
+    {
+     "file": "public/assets/landing/f-match-16x9.webm",
+     "bytes": 790287,
+     "sha256": "f639414aeff9ab1dafe8d9756bacb4566b258ded8d80585039732649d1f4efb0"
+    },
+    {
+     "file": "public/assets/landing/f-match-16x9.webp",
+     "bytes": 39014,
+     "sha256": "a37ed7910c1788fdb35e1ecbccf7db290658c272ef2a9aac2e004ae2699bc28c"
+    },
+    {
+     "file": "public/assets/landing/f-match-16x9-end.webp",
+     "bytes": 36482,
+     "sha256": "6e350695c13eee96470ed707cdd71bd9fafff8c7917d42166b5facb6224562ab"
+    }
+   ]
+  },
+  {
+   "id": "g-mismatch",
+   "aspect": "16x9",
+   "use": "the verdict, right: mismatch",
+   "edit": "cut",
+   "seconds": 7.75,
+   "sources": [
+    "GraphiteClips/scene-14.mp4"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/g-mismatch-16x9.mp4",
+     "bytes": 743069,
+     "sha256": "9cb89e6fdb0f7b32b0ab64fdb8978a1cec980e550b7caa0ad61aa8f1c321339b"
+    },
+    {
+     "file": "public/assets/landing/g-mismatch-16x9.webm",
+     "bytes": 644153,
+     "sha256": "42630112118c85303a898ea739a57db0b5727ea9c6216530ea7403380758ca71"
+    },
+    {
+     "file": "public/assets/landing/g-mismatch-16x9.webp",
+     "bytes": 38616,
+     "sha256": "df273ec5cb66eba5a676282fa436ef879e2af02d195c765a8c5369a1b200e1c1"
+    },
+    {
+     "file": "public/assets/landing/g-mismatch-16x9-end.webp",
+     "bytes": 29968,
+     "sha256": "dc8e55f87fdbfb967141ca47f1ee0a2b109b71148e87cb19920053f75dd8eb91"
+    }
+   ]
+  },
+  {
+   "id": "h-return",
+   "aspect": "16x9",
+   "use": "I do not know this person: the money turns back",
+   "edit": "cut",
+   "seconds": 7.75,
+   "sources": [
+    "GraphiteClips/scene-17.mp4"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/h-return-16x9.mp4",
+     "bytes": 1086362,
+     "sha256": "9fa3e109b490f23daf4d1f7d09242bff375a5eff5fbf93a98bb02c9d7402d90c"
+    },
+    {
+     "file": "public/assets/landing/h-return-16x9.webm",
+     "bytes": 725911,
+     "sha256": "466b9995f43a4b912d8b0e245f6f19311026660ffc10e25030a130a166efe3a3"
+    },
+    {
+     "file": "public/assets/landing/h-return-16x9.webp",
+     "bytes": 56158,
+     "sha256": "b40d5a143bb32bd83e42ec133358843efffdae134db254a9ee274e880213194c"
+    },
+    {
+     "file": "public/assets/landing/h-return-16x9-end.webp",
+     "bytes": 15588,
+     "sha256": "868788f8c1c47ba4d3709e2d8ffcd7858fd42ffe27a8132fa0bc8d1ffdc8984e"
+    }
+   ]
+  },
+  {
+   "id": "bg-terraces",
+   "aspect": "16x9",
+   "use": "the insight, the example",
+   "edit": "still",
+   "seconds": null,
+   "sources": [
+    "graphite-landing-keyframes-for-background-video-loops-approved-set-one/scene-01.jpeg"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/bg-terraces-16x9.webp",
+     "bytes": 15346,
+     "sha256": "43d07dc1459e77ed0f0c8b4827a4b25a52d862a1014024ed974d12944d2536c2"
+    }
+   ]
+  },
+  {
+   "id": "bg-terraces",
+   "aspect": "9x16",
+   "use": "the insight, the example",
+   "edit": "still",
+   "seconds": null,
+   "sources": [
+    "graphite-landing-keyframes-for-background-video-loops-approved-set-one/scene-05.jpeg"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/bg-terraces-9x16.webp",
+     "bytes": 9516,
+     "sha256": "2f9ba89a588048f82a87d877e027bde6a965600913d1aea6dd6c6c305748d2ae"
+    }
+   ]
+  },
+  {
+   "id": "bg-line",
+   "aspect": "16x9",
+   "use": "the mini-demo, the honest status",
+   "edit": "still",
+   "seconds": null,
+   "sources": [
+    "graphite-landing-keyframes-for-background-video-loops-approved-set-four/scene-04.jpeg"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/bg-line-16x9.webp",
+     "bytes": 14506,
+     "sha256": "e5322112bb598aefee25149081f0a2f6974fb89938b98b91437a0d687ee43a01"
+    }
+   ]
+  },
+  {
+   "id": "bg-monolith",
+   "aspect": "16x9",
+   "use": "why BCC",
+   "edit": "still",
+   "seconds": null,
+   "sources": [
+    "graphite-landing-keyframes-for-background-video-loops-approved-set-two/scene-07.jpeg"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/bg-monolith-16x9.webp",
+     "bytes": 8532,
+     "sha256": "c01e344c2c17b1ef9bd1c24fa72e7d04b2033343b90d4a0d70593881c84035d6"
+    }
+   ]
+  },
+  {
+   "id": "bg-monolith",
+   "aspect": "9x16",
+   "use": "why BCC",
+   "edit": "still",
+   "seconds": null,
+   "sources": [
+    "graphite-landing-keyframes-for-background-video-loops-approved-set-four/scene-05.jpeg"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/bg-monolith-9x16.webp",
+     "bytes": 11084,
+     "sha256": "20d0c384ebc38e22b84acaf922c76d17abdaff2aa4d2e781d60aa93a7b00cb99"
+    }
+   ]
+  },
+  {
+   "id": "f-match",
+   "aspect": "9x16",
+   "use": "the verdict: match",
+   "edit": "cut",
+   "seconds": 7.75,
+   "sources": [
+    "GraphiteClipsTall/scene-02.mp4"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/f-match-9x16.mp4",
+     "bytes": 722736,
+     "sha256": "2d1a1a8fb081d1feea8476451c9f9eacdaa264797a8f52d03c9b8d893b311d81"
+    },
+    {
+     "file": "public/assets/landing/f-match-9x16.webm",
+     "bytes": 614663,
+     "sha256": "a3045845841ebb03b0f8dad8e969facdc84e54b5bad2786ccf89d064b24b0cd6"
+    },
+    {
+     "file": "public/assets/landing/f-match-9x16.webp",
+     "bytes": 27290,
+     "sha256": "203b8a86cf78959a0aa0debf2e3f854ff7d02662227c1c2a210bc811f2868a80"
+    },
+    {
+     "file": "public/assets/landing/f-match-9x16-end.webp",
+     "bytes": 28986,
+     "sha256": "6afa290fa4cecae3235b5b8f1e76cc54b5b54d812eaeef6613c0cc1df45d532b"
+    }
+   ]
+  },
+  {
+   "id": "g-mismatch",
+   "aspect": "9x16",
+   "use": "the verdict: mismatch",
+   "edit": "cut",
+   "seconds": 7.75,
+   "sources": [
+    "GraphiteClipsTall/scene-03.mp4"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/g-mismatch-9x16.mp4",
+     "bytes": 629688,
+     "sha256": "2cef19b8cdebd883fd98087d7dc22511764a2aa4fef6c1aa59ecbcc87c9ac084"
+    },
+    {
+     "file": "public/assets/landing/g-mismatch-9x16.webm",
+     "bytes": 448517,
+     "sha256": "e9010b6e2e7c1e92bf2f54fb402f475253e89ca8c8481f684404f7a86e1b62ff"
+    },
+    {
+     "file": "public/assets/landing/g-mismatch-9x16.webp",
+     "bytes": 30436,
+     "sha256": "64362e27ac926646e70d1321c672a43da98ad26048db56ad59887aefb9de64d2"
+    },
+    {
+     "file": "public/assets/landing/g-mismatch-9x16-end.webp",
+     "bytes": 27368,
+     "sha256": "a8b74ed30a1a5d4eff122a4a5b8641619484e2082792997f1ca20e7ca59e3b5b"
+    }
+   ]
+  },
+  {
+   "id": "e-core",
+   "aspect": "9x16",
+   "use": "how it works, loop",
+   "edit": "loop",
+   "seconds": 7.2,
+   "sources": [
+    "GraphiteClipsTall/scene-04.mp4"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/e-core-9x16.mp4",
+     "bytes": 1027012,
+     "sha256": "25b5e254d1b1ae5ca2871e99a82ad4cc03053e5627c70f41a72e4a18cccaa5b4"
+    },
+    {
+     "file": "public/assets/landing/e-core-9x16.webm",
+     "bytes": 764390,
+     "sha256": "bf578bb59d3fe29976bf87256c6701682bd1fcacedf97ac183fe0200af97ff7a"
+    },
+    {
+     "file": "public/assets/landing/e-core-9x16.webp",
+     "bytes": 21520,
+     "sha256": "54eedc2e4094b8e8d788006bc155ac1c8d32e5361117a459974834b4a284770c"
+    }
+   ]
+  },
+  {
+   "id": "b-freeze",
+   "aspect": "9x16",
+   "use": "hero after scrolling",
+   "edit": "cut",
+   "seconds": 5.83,
+   "sources": [
+    "GraphiteClipsTall/scene-05.mp4"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/b-freeze-9x16.mp4",
+     "bytes": 490281,
+     "sha256": "f60da738b298eed32872c36dd962d6dccd4f152623e6b824ebe79c01dbfeff15"
+    },
+    {
+     "file": "public/assets/landing/b-freeze-9x16.webm",
+     "bytes": 358456,
+     "sha256": "449afb46bbb8a050b9d8cde69b9151aede0e669f52b50e6bf0fe2f27d9775b4e"
+    },
+    {
+     "file": "public/assets/landing/b-freeze-9x16.webp",
+     "bytes": 36486,
+     "sha256": "5eb1915a23a186d09a2db87f1a0bb126d8aaa980d41601bc82c8d91c38abf0d8"
+    },
+    {
+     "file": "public/assets/landing/b-freeze-9x16-end.webp",
+     "bytes": 29478,
+     "sha256": "ca6f88be4f219357343ebeac963e912b2bfc6093b309848259344d766e9b0a53"
+    }
+   ]
+  },
+  {
+   "id": "c-whisper",
+   "aspect": "9x16",
+   "use": "the problem, loop",
+   "edit": "loop",
+   "seconds": 7.2,
+   "sources": [
+    "GraphiteClipsTall/scene-06.mp4"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/c-whisper-9x16.mp4",
+     "bytes": 352155,
+     "sha256": "afc6a9d103f3a53d0293f9cdccf3b9ca690883262b46ee3cdd554a90e4a74b31"
+    },
+    {
+     "file": "public/assets/landing/c-whisper-9x16.webm",
+     "bytes": 200084,
+     "sha256": "d4c6cee18ccb34209dedab0e2abb04bc025b0be98213b9edf468abfc2258c405"
+    },
+    {
+     "file": "public/assets/landing/c-whisper-9x16.webp",
+     "bytes": 18172,
+     "sha256": "7e6cd431e2f5175befc57e463f6d78c0fd22ffa8bab469beb9ac890b0d75a5b9"
+    }
+   ]
+  },
+  {
+   "id": "d-chambers",
+   "aspect": "9x16",
+   "use": "how it works",
+   "edit": "cut",
+   "seconds": 7.75,
+   "sources": [
+    "GraphiteClipsTall/scene-07.mp4"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/d-chambers-9x16.mp4",
+     "bytes": 589536,
+     "sha256": "ac59f3bca17f3ec72c5d478bd50e7a254db6da5714978c02c08fb7189b01e822"
+    },
+    {
+     "file": "public/assets/landing/d-chambers-9x16.webm",
+     "bytes": 573476,
+     "sha256": "31fc757bde0965b8a704b40f2b09ac2939ba26128799b720772c7d0a8d7eba58"
+    },
+    {
+     "file": "public/assets/landing/d-chambers-9x16.webp",
+     "bytes": 19112,
+     "sha256": "e825f071833be2ba411178fec7787f6e6340a6d2fb6785f1240d9280af9c5f8e"
+    },
+    {
+     "file": "public/assets/landing/d-chambers-9x16-end.webp",
+     "bytes": 22536,
+     "sha256": "13e46bbe9552ee2f2e5262f8286b9dab76b97776a78b4be7646db3459faa0e52"
+    }
+   ]
+  },
+  {
+   "id": "h-return",
+   "aspect": "9x16",
+   "use": "I do not know this person",
+   "edit": "cut",
+   "seconds": 7.75,
+   "sources": [
+    "GraphiteClipsTall/scene-08.mp4"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/h-return-9x16.mp4",
+     "bytes": 1093069,
+     "sha256": "25482cf4977669e25c39d8b45be9a6067e06ed4c78492b803c7484b6e7044206"
+    },
+    {
+     "file": "public/assets/landing/h-return-9x16.webm",
+     "bytes": 858523,
+     "sha256": "67c1b8623d7cc65c87dd4417f86e9d3bf29afd0f2e26e997f3dd5bb864dbd452"
+    },
+    {
+     "file": "public/assets/landing/h-return-9x16.webp",
+     "bytes": 47890,
+     "sha256": "8157b9df5dc02fd4b1145bd6075d14aba100ec39f2e5870a3db196998eff3719"
+    },
+    {
+     "file": "public/assets/landing/h-return-9x16-end.webp",
+     "bytes": 26724,
+     "sha256": "347c95dabcf70640f0b04feaf05a65708c26d7d37557f6a9ea1914eb91031afb"
+    }
+   ]
+  },
+  {
+   "id": "a-hero",
+   "aspect": "9x16",
+   "use": "hero, loop; closing",
+   "edit": "loop",
+   "seconds": 7.25,
+   "sources": [
+    "GraphiteClipsTall/scene-09.mp4"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/a-hero-9x16.mp4",
+     "bytes": 857368,
+     "sha256": "6aa3f16aa76244844a62584fbbb483ec0a37ff88e3566f738f6282da5579ca09"
+    },
+    {
+     "file": "public/assets/landing/a-hero-9x16.webm",
+     "bytes": 774177,
+     "sha256": "d28de7ce26365a2f1741614b68a790753a436480e3e5daa5d74b8055d058c510"
+    },
+    {
+     "file": "public/assets/landing/a-hero-9x16.webp",
+     "bytes": 30662,
+     "sha256": "788224244d43f83e1b04f7ebb85bdfb0b4b3f3655ece41d73e92468fac1ad9d6"
+    }
+   ]
+  },
+  {
+   "id": "bg-line",
+   "aspect": "9x16",
+   "use": "the mini-demo, the honest status",
+   "edit": "still",
+   "seconds": null,
+   "sources": [
+    "graphite-landing-keyframes-for-background-video-loops-approved-set-seven/scene-01.jpeg"
+   ],
+   "files": [
+    {
+     "file": "public/assets/landing/bg-line-9x16.webp",
+     "bytes": 14782,
+     "sha256": "34fcee506f65889ac069ea91b2cd0f172ca3d8f7813a86bd74b0cbbbb6ae19b8"
+    }
+   ]
+  }
+ ]
+}

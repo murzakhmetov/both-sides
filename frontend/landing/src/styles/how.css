@@ -1,0 +1,217 @@
+/* "How it works": two phones, the lock between them and the words of the step. */
+
+.phone-mock {
+  /* Set by useFit when the window is too low. */
+  zoom: var(--fit, 1);
+  transition:
+    transform 600ms var(--ease-calm),
+    border-color 600ms var(--ease-calm),
+    filter 600ms var(--ease-calm);
+}
+
+.phone-mock[data-on='true'] {
+  border-color: rgb(255 255 255 / 0.42);
+}
+
+/* The other phone steps back but stays readable. */
+.phone-mock[data-on='false'] {
+  filter: brightness(0.78) saturate(0.6);
+  transform: scale(0.95);
+}
+
+.phone-screen {
+  min-height: clamp(15rem, 43svh, 25rem);
+}
+
+.how-phone {
+  display: grid;
+}
+
+/* -- laptops with a short window: the step below the phones needs the room --- */
+
+@media (min-width: 48rem) and (max-height: 52rem) {
+  .how-steps {
+    padding-block: 0.8rem 1.5rem;
+  }
+
+  .how-progress {
+    margin-top: 0.8rem;
+  }
+
+  .phone-screen {
+    padding-block: 0.6rem;
+  }
+
+  .phone-screen .hairline {
+    margin-block: 0.45rem;
+  }
+}
+
+@media (min-width: 48rem) and (max-height: 46.5rem) {
+  .phone-small {
+    display: none;
+  }
+}
+
+@media (min-width: 48rem) and (max-height: 43rem) {
+  .phone-head {
+    display: none;
+  }
+
+  .how-title {
+    padding-top: 5.6rem;
+  }
+
+  .how-title .display {
+    font-size: 1.35rem;
+  }
+}
+
+@media (min-width: 48rem) and (max-width: 80rem) and (max-height: 50rem) {
+  .phone-head,
+  .phone-small {
+    display: none;
+  }
+}
+
+/* -- phones: one phone at a time, the one that people should look at --------- */
+
+@media (max-width: 47.99rem) {
+  .how-phone {
+    grid-area: 1 / 1;
+    transition: opacity 500ms var(--ease-calm);
+  }
+
+  .how-phone[data-front='false'] {
+    opacity: 0;
+  }
+
+  .how-phone .phone-mock {
+    max-width: 16.5rem;
+  }
+
+  .phone-screen {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 47.99rem) and (max-height: 56rem) {
+  .phone-screen {
+    padding-block: 0.6rem;
+  }
+
+  .phone-screen .hairline {
+    margin-block: 0.45rem;
+  }
+}
+
+/* The question and the answer stay, the rest steps back. */
+@media (max-width: 47.99rem) and (max-height: 50rem) {
+  .phone-head,
+  .phone-small {
+    display: none;
+  }
+}
+
+@media (max-width: 47.99rem) and (max-height: 44rem) {
+  .how-title {
+    position: absolute;
+    visibility: hidden;
+  }
+
+  .how-phones {
+    padding-top: 5.4rem;
+  }
+
+  .phone-screen {
+    padding-block: 0.5rem;
+  }
+
+  .phone-screen .hairline {
+    margin-block: 0.35rem;
+  }
+
+  .phone-amount {
+    font-size: 1.3rem;
+  }
+
+  .how-steps {
+    padding-block: 0.4rem 1rem;
+  }
+
+  .how-steps p {
+    font-size: 0.92rem;
+  }
+
+  .how-progress {
+    margin-top: 0.7rem;
+  }
+}
+
+/* -- a phone held sideways: the step stands beside the phone ----------------- */
+
+@media (max-height: 34rem) {
+  .how-title {
+    position: absolute;
+    visibility: hidden;
+  }
+
+  .how-stage {
+    flex-direction: row-reverse;
+    align-items: center;
+    padding-top: 4.4rem;
+  }
+
+  .how-phones {
+    flex: 1.5;
+    align-self: stretch;
+    grid-template-columns: 1fr;
+    padding: 0.5rem 2.6rem 0.5rem 0;
+  }
+
+  .how-phones > :not(.how-phone) {
+    display: none;
+  }
+
+  .how-phone {
+    grid-area: 1 / 1;
+    justify-items: center;
+    transition: opacity 500ms var(--ease-calm);
+  }
+
+  .how-phone[data-front='false'] {
+    opacity: 0;
+  }
+
+  .how-phone .phone-mock {
+    max-width: 25rem;
+  }
+
+  .how-steps {
+    flex: 1;
+    padding-block: 0.8rem;
+    background: linear-gradient(90deg, rgb(11 11 12 / 0.85) 70%, transparent);
+  }
+
+  .how-steps p {
+    font-size: 0.92rem;
+  }
+
+  .phone-head,
+  .phone-small {
+    display: none;
+  }
+
+  .phone-screen {
+    min-height: 0;
+    padding-block: 0.5rem;
+  }
+
+  .phone-screen .hairline {
+    margin-block: 0.35rem;
+  }
+
+  .phone-amount {
+    font-size: 1.2rem;
+  }
+}

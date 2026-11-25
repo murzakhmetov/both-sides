@@ -1,0 +1,181 @@
+{
+  "about": "Shared word list of the offline matcher. Written with Kazakh letters; the loader folds them to plain Cyrillic. Entry forms: \"word\" = exact word, [stem, class] = stem plus one of the endings of that class, {\"phrase\": [...]} = words in a row, where a trailing * means any ending.",
+  "endings": {
+    "ru_m": ["", "а", "у", "ом", "ем", "е", "ы", "и", "ов", "ев", "ам", "ами", "ах", "ья", "ьев", "ьям", "ьями", "ьях"],
+    "ru_f": ["", "а", "я", "ы", "и", "е", "у", "ю", "ой", "ей", "ою", "ею", "ам", "ям", "ами", "ями", "ах", "ях"],
+    "en": ["", "s", "es"]
+  },
+  "kazakh_suffix_pattern": "(лар|лер|дар|дер|тар|тер)?(ымыз|имиз|мыз|миз|ыныз|иниз|ныз|низ|ым|им|м|ын|ин|н|сы|си|ы|и)?(нын|нин|дын|дин|тын|тин|га|ге|ка|ке|на|не|а|е|ды|ди|ты|ти|ны|ни|н|да|де|та|те|нда|нде|дан|ден|тан|тен|нан|нен|мен|бен|пен)?",
+  "any_max_tail": 7,
+  "relations": {
+    "brother": {
+      "matches": ["brother", "sister", "relative"],
+      "entries": [["брат", "ru_m"], ["братишк", "any"], ["братан", "any"], ["братик", "any"], ["аға", "kk"], ["іні", "kk"], ["інішек", "kk"], ["інішег", "kk"], ["ағатай", "kk"], ["бауыр", "kk"], ["көке", "kk"], ["brother", "en"], ["bro", "en"]]
+    },
+    "sister": {
+      "matches": ["sister", "brother", "relative"],
+      "entries": [["сестр", "any"], ["сестренк", "any"], ["сестричк", "any"], "систер", ["әпке", "kk"], ["эпке", "kk"], ["әпше", "kk"], ["әпкетай", "kk"], ["сіңлі", "kk"], ["сіңіл", "kk"], ["қарындас", "kk"], ["тәте", "kk"], ["апа", "kk"], ["sister", "en"], ["sis", "en"]]
+    },
+    "mother": {
+      "matches": ["child", "relative"],
+      "entries": [["мам", "ru_f"], ["мама", "kk"], ["матер", "ru_m"], "мать", "матерью", ["мамул", "any"], ["мамочк", "any"], ["мамк", "ru_f"], ["ана", "kk"], ["анаш", "kk"], ["шеше", "kk"], ["апа", "kk"], ["mother", "en"], ["mom", "en"], ["mum", "en"], "mommy", "mummy"]
+    },
+    "father": {
+      "matches": ["child", "relative"],
+      "entries": [["пап", "ru_f"], ["папа", "kk"], "отец", ["отц", "ru_m"], ["бат", "ru_f"], ["папочк", "any"], ["әке", "kk"], ["эке", "kk"], ["әкей", "kk"], ["әкетай", "kk"], ["әкеш", "kk"], ["көке", "kk"], ["father", "en"], ["dad", "en"], "daddy"]
+    },
+    "child": {
+      "matches": ["mother", "father", "relative"],
+      "entries": [["сын", "ru_m"], ["сыноч", "any"], ["сынок", "any"], ["сынул", "any"], "дочь", "дочери", "дочерью", ["дочк", "any"], ["доч", "ru_f"], ["доченьк", "any"], "ребенок", ["ребенк", "any"], "дети", "детям", "детей", ["ұл", "kk"], ["қыз", "kk"], ["бала", "kk"], ["son", "en"], ["daughter", "en"], "kid", "kids", "child", "children"]
+    },
+    "spouse": {
+      "matches": ["spouse", "relative"],
+      "entries": [["муж", "ru_m"], ["супруг", "any"], ["жен", "ru_f"], ["женушк", "any"], ["күйеу", "kk"], ["әйел", "kk"], ["эйел", "kk"], ["зайып", "kk"], ["зайыб", "kk"], ["келіншек", "kk"], ["келіншег", "kk"], ["жолдас", "kk"], ["жұбай", "kk"], ["husband", "en"], ["wife", "en"], "hubby"]
+    },
+    "friend": {
+      "matches": ["friend", "classmate", "roommate", "acquaintance", "colleague"],
+      "entries": [["друг", "ru_m"], "друзья", "друзей", "друзьям", "друзьями", "друзьях", ["дружбан", "any"], ["дружок", "any"], ["дружк", "ru_m"], ["подруг", "any"], ["подружк", "any"], ["приятел", "any"], ["кореш", "any"], ["дос", "kk"], ["құрбы", "kk"], ["құрдас", "kk"], ["жолдас", "kk"], ["friend", "en"], ["buddy", "en"], "bestie", "pal"]
+    },
+    "grandparent": {
+      "matches": ["grandchild", "relative"],
+      "entries": [["бабушк", "any"], ["бабул", "any"], ["дедушк", "any"], ["дедул", "any"], "дед", "деду", "деда", ["ата", "kk"], ["әже", "kk"], ["эже", "kk"], ["апа", "kk"], ["grandmother", "en"], ["grandfather", "en"], ["grandma", "en"], ["grandpa", "en"]]
+    },
+    "grandchild": {
+      "matches": ["grandparent", "relative"],
+      "entries": [["внук", "ru_m"], ["внучк", "any"], ["внучек", "any"], ["немере", "kk"], ["grandson", "en"], ["granddaughter", "en"]]
+    },
+    "aunt_uncle": {
+      "matches": ["niece_nephew", "relative"],
+      "entries": [["тет", "ru_f"], ["теть", "any"], ["тетушк", "any"], ["дяд", "ru_f"], ["дядь", "any"], ["нағашы", "kk"], ["аға", "kk"], ["тәте", "kk"], ["aunt", "en"], "auntie", ["uncle", "en"]]
+    },
+    "niece_nephew": {
+      "matches": ["aunt_uncle", "relative"],
+      "entries": [["племянни", "any"], ["племяш", "any"], ["жиен", "kk"], ["nephew", "en"], ["niece", "en"]]
+    },
+    "relative": {
+      "matches": ["relative", "brother", "sister", "mother", "father", "child", "spouse", "grandparent", "grandchild", "aunt_uncle", "niece_nephew"],
+      "entries": [["родственни", "any"], "родня", "родне", ["туыс", "kk"], ["relative", "en"], ["cousin", "en"], ["кузен", "any"]]
+    },
+    "colleague": {
+      "matches": ["colleague", "friend", "boss", "employee"],
+      "entries": [["коллег", "any"], ["сотрудни", "any"], ["напарни", "any"], ["әріптес", "kk"], ["colleague", "en"], ["coworker", "en"]]
+    },
+    "neighbour": {
+      "matches": ["neighbour", "roommate"],
+      "entries": [["сосед", "any"], ["көрші", "kk"], ["neighbour", "en"], ["neighbor", "en"]]
+    },
+    "roommate": {
+      "matches": ["roommate", "neighbour", "friend"],
+      "entries": [["сожител", "any"], ["roommate", "en"], ["flatmate", "en"]]
+    },
+    "classmate": {
+      "matches": ["classmate", "friend"],
+      "entries": [["одноклассни", "any"], ["однокурсни", "any"], ["одногрупп", "any"], ["сыныптас", "kk"], ["курстас", "kk"], ["топтас", "kk"], ["classmate", "en"]]
+    },
+    "landlord": {
+      "matches": ["tenant"],
+      "entries": [["хозяин", "any"], ["хозяйк", "any"], ["хозяев", "any"], ["арендодател", "any"], ["landlord", "en"]]
+    },
+    "tenant": {
+      "matches": ["landlord"],
+      "entries": [["квартирант", "any"], ["жилец", "any"], ["жильц", "any"], ["арендатор", "any"], ["пәтерші", "kk"], ["tenant", "en"]]
+    },
+    "seller": {
+      "matches": ["buyer"],
+      "entries": [["продавец", "any"], ["продавц", "any"], ["сатушы", "kk"], ["seller", "en"]]
+    },
+    "buyer": {
+      "matches": ["seller"],
+      "entries": [["покупател", "any"], ["клиент", "any"], ["заказчи", "any"], ["buyer", "en"], ["customer", "en"]]
+    },
+    "boss": {
+      "matches": ["employee", "colleague"],
+      "entries": [["начальни", "any"], ["шеф", "ru_m"], ["бастық", "kk"], ["бастығ", "kk"], ["boss", "en"]]
+    },
+    "employee": {
+      "matches": ["boss", "colleague"],
+      "entries": [["работник", "any"], ["подчиненн", "any"], ["жұмысшы", "kk"], ["employee", "en"], ["worker", "en"]]
+    },
+    "acquaintance": {
+      "matches": ["acquaintance", "friend"],
+      "entries": [["знаком", "any"], ["таныс", "kk"], ["acquaintance", "en"]]
+    }
+  },
+  "reasons": {
+    "rent": {
+      "entries": [["аренд", "any"], ["квартир", "any"], ["квартплат", "any"], ["съемн", "any"], "съем", ["комнат", "any"], ["общаг", "any"], ["общежит", "any"], ["пәтер", "kk"], ["пэтер", "kk"], ["пәтерақы", "kk"], ["жалда", "any"], "жалға", ["жатақхана", "kk"], ["бөлме", "kk"], ["rent", "en"], ["apartment", "en"], ["flat", "en"], "dorm"]
+    },
+    "half": {
+      "entries": [["половин", "any"], "пополам", "напополам", "поровну", "доля", "доли", "долю", "доле", "долей", "долями", "часть", "части", "частью", "частями", "скинулись", ["поделил", "any"], ["жарты", "kk"], ["үлес", "kk"], ["бөлік", "kk"], ["бөліг", "kk"], ["half", "en"], ["share", "en"], "split"]
+    },
+    "debt": {
+      "entries": [["долг", "ru_m"], ["должок", "any"], ["должник", "any"], ["задолж", "any"], "взаймы", "занять", {"phrase": ["был*", "долж*"]}, {"phrase": ["был*", "*", "долж*"]}, ["займ", "ru_m"], ["заем", "ru_m"], ["одолж", "any"], ["одалжив", "any"], ["занимал", "any"], ["занял", "any"], ["қарыз", "kk"], ["debt", "en"], ["loan", "en"], "owed", "owe", "owes", "borrowed"]
+    },
+    "treatment": {
+      "entries": [["лечен", "any"], ["лечит", "any"], ["лечил", "any"], ["лечеб", "any"], ["лечат", "any"], ["лечим", "any"], "лечусь", ["вылеч", "any"], ["операци", "any"], ["больниц", "any"], ["больнич", "any"], ["лекарств", "any"], ["аптек", "any"], ["врач", "ru_m"], ["доктор", "any"], ["анализ", "any"], ["обследован", "any"], ["стоматолог", "any"], ["зуб", "ru_m"], ["зубн", "any"], ["клиник", "any"], ["ем", "kk"], ["емде", "any"], ["дәрі", "kk"], ["дэрі", "kk"], ["дәріхана", "kk"], ["дәрігер", "any"], ["аурухана", "kk"], ["емхана", "kk"], ["ота", "kk"], ["тіс", "kk"], ["treatment", "en"], ["medicine", "en"], "medical", ["hospital", "en"], ["surgery", "en"], ["doctor", "en"], ["dentist", "en"]]
+    },
+    "birthday": {
+      "entries": [["рожден", "any"], "др", ["днюх", "any"], {"phrase": ["туған", "күн*"]}, {"phrase": ["туылған", "күн*"]}, {"phrase": ["д", "р"]}, ["туғанкүн", "kk"], ["birthday", "en"], "bday"]
+    },
+    "food": {
+      "entries": ["еда", "еды", "еде", "едой", {"phrase": ["на", "еду"]}, {"phrase": ["за", "еду"]}, {"phrase": ["за", "мою", "еду"]}, {"phrase": ["на", "мою", "еду"]}, {"phrase": ["за", "нашу", "еду"]}, {"phrase": ["на", "нашу", "еду"]}, {"phrase": ["за", "общую", "еду"]}, {"phrase": ["на", "общую", "еду"]}, {"phrase": ["купил*", "еду"]}, ["обедал", "any"], ["ужинал", "any"], ["тамақтан", "any"], ["дастарқан", "kk"], ["продукт", "any"], ["обед", "ru_m"], ["ужин", "ru_m"], ["завтрак", "ru_m"], "кафе", ["кафешк", "any"], ["ресторан", "any"], ["пицц", "any"], "суши", ["шашлык", "any"], ["столов", "any"], "кофе", ["бургер", "any"], ["донер", "any"], ["тамақ", "kk"], ["тамағ", "kk"], ["азық", "kk"], ["азығ", "kk"], ["түлік", "kk"], ["түліг", "kk"], ["дастархан", "kk"], ["food", "en"], "grocery", "groceries", ["lunch", "en"], ["dinner", "en"], ["pizza", "en"], "coffee"]
+    },
+    "tuition": {
+      "entries": [["учеб", "any"], ["обучен", "any"], ["университет", "any"], "универ", "универа", "универу", "универе", ["учит", "any"], "учусь", ["курс", "kk"], ["институт", "any"], ["колледж", "any"], ["школ", "any"], ["репетитор", "any"], ["курс", "ru_m"], ["семестр", "any"], ["оқу", "kk"], ["сабақ", "kk"], ["сабағ", "kk"], ["мектеп", "kk"], ["мектеб", "kk"], "tuition", ["school", "en"], "university", ["college", "en"], ["course", "en"], "study", "studies"]
+    },
+    "gift": {
+      "entries": [["подар", "any"], ["презент", "any"], ["букет", "any"], ["сыйлық", "kk"], ["сыйлығ", "kk"], ["сыйла", "any"], ["сүйінші", "kk"], ["көрімдік", "kk"], ["байғазы", "kk"], ["gift", "en"], ["present", "en"]]
+    },
+    "wedding": {
+      "entries": [["свадьб", "any"], ["свадеб", "any"], "тойға", "тойына", "тойыма", "тойымыз", "тойда", "тойдың", ["юбиле", "any"], ["құдалық", "kk"], ["wedding", "en"]]
+    },
+    "funeral": {
+      "entries": [["похорон", "any"], ["поминк", "any"], ["садақа", "kk"], ["жаназа", "kk"], ["funeral", "en"]]
+    },
+    "kindergarten": {
+      "entries": [["садик", "any"], ["детсад", "any"], ["балабақша", "kk"], ["бақша", "kk"], {"phrase": ["детск*", "сад*"]}, ["kindergarten", "en"]]
+    },
+    "class_fund": {
+      "entries": [["родительск", "any"], {"phrase": ["на", "класс"]}, {"phrase": ["за", "класс"]}, {"phrase": ["для", "класса"]}, {"phrase": ["фонд", "класса"]}, ["сынып", "kk"]]
+    },
+    "utilities": {
+      "entries": [["коммунал", "any"], ["электричеств", "any"], ["электроэнерг", "any"], {"phrase": ["за", "интернет"]}, {"phrase": ["на", "интернет"]}, {"phrase": ["за", "свет"]}, {"phrase": ["за", "газ"]}, {"phrase": ["за", "воду"]}, "utilities", {"phrase": ["for", "internet"]}]
+    },
+    "transport": {
+      "entries": [["такси", "any"], ["бензин", "any"], ["проезд", "any"], ["попутк", "any"], ["заправк", "any"], ["жанармай", "kk"], ["taxi", "en"], ["fuel", "en"], "petrol"]
+    },
+    "travel": {
+      "entries": [["билет", "any"], ["поездк", "any"], ["отел", "any"], ["гостиниц", "any"], ["путевк", "any"], "сапарға", "сапары", "сапарына", "сапарыма", "сапарда", "жолсапар", ["ticket", "en"], ["trip", "en"], ["hotel", "en"]]
+    },
+    "repair": {
+      "entries": [["ремонт", "any"], ["починк", "any"], ["починил", "any"], ["жөндеу", "kk"], ["repair", "en"]]
+    },
+    "car": {
+      "entries": [["машин", "any"], "авто", ["запчаст", "any"], ["шиномонтаж", "any"], ["резин", "ru_f"], ["көлік", "kk"], ["көліг", "kk"], ["car", "en"], "tyres", "tires"]
+    },
+    "electronics": {
+      "entries": [["телефон", "any"], ["айфон", "any"], ["ноутбук", "any"], ["компьютер", "any"], ["наушник", "any"], ["phone", "en"], ["laptop", "en"], "iphone"]
+    },
+    "clothes": {
+      "entries": [["плать", "any"], ["куртк", "any"], ["обув", "any"], ["кроссовк", "any"], ["одежд", "any"], ["киім", "kk"], ["dress", "en"], ["shoe", "en"], "clothes"]
+    },
+    "sport": {
+      "entries": [["трениров", "any"], ["футбол", "any"], ["абонемент", "any"], ["спортзал", "any"], ["волейбол", "any"], ["жаттығу", "kk"], ["gym", "en"], "football"]
+    },
+    "salary": {
+      "entries": [["зарплат", "any"], ["аванс", "any"], ["подработ", "any"], {"phrase": ["за", "работу"]}, ["жалақы", "kk"], ["еңбекақы", "kk"], ["salary", "en"], "wages"]
+    },
+    "credit": {
+      "entries": [["кредит", "any"], ["рассрочк", "any"], ["ипотек", "any"], ["несие", "kk"], ["mortgage", "en"], ["credit", "en"]]
+    },
+    "purchase": {
+      "entries": [["покупк", "any"], ["товар", "any"], ["заказ", "any"], ["продаж", "any"], "сатып", ["purchase", "en"], "bought"]
+    },
+    "delivery": {
+      "entries": [["доставк", "any"], ["посылк", "any"], ["жеткізу", "kk"], "delivery", ["parcel", "en"]]
+    },
+    "beauty": {
+      "entries": [["маникюр", "any"], ["стрижк", "any"], ["ресниц", "any"], ["косметик", "any"], ["парикмахер", "any"], ["manicure", "en"], "haircut"]
+    }
+  }
+}

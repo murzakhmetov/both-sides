@@ -1,0 +1,120 @@
+/* "The verdict": two halves side by side, or one above the other on a phone. */
+
+.verdict-panel {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+/* Both halves stay visible; only one of the two videos runs. The other picture steps back, its words do not. */
+.verdict-panel .media-layer {
+  opacity: 1;
+  transition: filter 900ms var(--ease-calm);
+}
+
+.verdict-panel[data-on='false'] .media-layer {
+  filter: brightness(0.45) saturate(0.6);
+}
+
+.verdict-panel-file {
+  border-top: 1px solid rgb(255 255 255 / 0.12);
+  transition: border-color 900ms var(--ease-calm);
+}
+
+/* Red stands only for the moment when the stories do not match: here and in the example. */
+.verdict-panel-file[data-on='true'] {
+  border-color: var(--color-mismatch);
+}
+
+.verdict-text {
+  position: relative;
+  width: 100%;
+  padding: clamp(3rem, 12svh, 8rem) clamp(1.25rem, 3.4vw, 3.5rem) clamp(1.25rem, 3.4vw, 3.5rem);
+}
+
+/* The case file comes last. */
+.case-file[data-on='true'] {
+  transition-delay: 1.6s;
+}
+
+@media (min-width: 64rem) {
+  .verdict-grid {
+    grid-template-columns: 1fr 1fr;
+    transition: grid-template-columns 1000ms var(--ease-calm);
+  }
+
+  /* The half that is told right now gets the room. */
+  .verdict-grid[data-part='0'] {
+    grid-template-columns: 1.9fr 1fr;
+  }
+
+  .verdict-grid[data-part='1'] {
+    grid-template-columns: 1fr 2.2fr;
+  }
+
+  .verdict-panel-file {
+    border-top: 0;
+    border-left: 1px solid rgb(255 255 255 / 0.12);
+    container-type: inline-size;
+  }
+
+  .verdict-panel-file .media-fill {
+    transition:
+      object-position 1000ms var(--ease-calm),
+      opacity 350ms linear;
+  }
+
+  /* The broken disc stands in the middle of the room that the case file leaves free. */
+  .verdict-panel-file[data-on='true'] .media-fill {
+    --drawn: max(100cqw, 177.78svh);
+    object-position: clamp(100cqw - var(--drawn), (100cqw - 30rem) / 2 - var(--drawn) / 2, 0px) 50%;
+  }
+}
+
+/* Short laptops: the case file must end above the words of its half. */
+@media (min-width: 64rem) and (max-height: 48rem) {
+  .case-file {
+    padding: 0.9rem 1.1rem;
+    font-size: 0.875rem;
+    /* Its shadow would lie on the words below. */
+    box-shadow: none;
+  }
+
+  .case-file dl {
+    gap: 0.35rem;
+  }
+
+  .case-file .hairline {
+    margin-block: 0.45rem;
+  }
+
+  .verdict-text .display-md {
+    font-size: 1.6rem;
+  }
+}
+
+/* Lower still: the label stands beside its value. */
+@media (min-width: 64rem) and (max-height: 43rem) {
+  .case-file {
+    max-width: 30rem;
+  }
+
+  .case-file dl > div {
+    display: grid;
+    grid-template-columns: 6.4rem 1fr;
+    gap: 0.6rem;
+  }
+}
+
+/* A phone held sideways. */
+@media (max-height: 34rem) and (max-width: 63.99rem) {
+  .verdict-grid {
+    grid-template: 1fr / 1fr 1fr;
+  }
+
+  .verdict-panel-file {
+    border-top: 0;
+    border-left: 1px solid rgb(255 255 255 / 0.12);
+  }
+}

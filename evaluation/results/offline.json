@@ -1,0 +1,781 @@
+{
+ "label": "measured on simulated pairs",
+ "bank_facts": "calm, no repeated story",
+ "auc": {
+  "all others": {
+   "auc": 0.7504237288135593,
+   "interval": [
+    0.6533898305084745,
+    0.8411016949152542
+   ]
+  },
+  "stranger": {
+   "auc": 0.92,
+   "interval": [
+    0.83375,
+    0.98375
+   ]
+  },
+  "other_transfer": {
+   "auc": 0.861904761904762,
+   "interval": [
+    0.75,
+    0.955952380952381
+   ]
+  },
+  "told_one_line": {
+   "auc": 0.43194444444444446,
+   "interval": [
+    0.26805555555555555,
+    0.5958333333333333
+   ]
+  }
+ },
+ "groups": {
+  "honest": {
+   "pairs": 40,
+   "released": 19,
+   "release_rate": 0.475,
+   "release_interval": [
+    0.329354700094151,
+    0.6250263800287721
+   ],
+   "held": 0,
+   "to_a_person": 21,
+   "failures": 0
+  },
+  "stranger": {
+   "pairs": 20,
+   "released": 2,
+   "release_rate": 0.1,
+   "release_interval": [
+    0.02786648096169142,
+    0.3010336471864123
+   ],
+   "held": 0,
+   "to_a_person": 18,
+   "failures": 0
+  },
+  "other_transfer": {
+   "pairs": 21,
+   "released": 2,
+   "release_rate": 0.09523809523809523,
+   "release_interval": [
+    0.026518767198269788,
+    0.2891413926484656
+   ],
+   "held": 0,
+   "to_a_person": 19,
+   "failures": 0
+  },
+  "told_one_line": {
+   "pairs": 18,
+   "released": 10,
+   "release_rate": 0.5555555555555556,
+   "release_interval": [
+    0.3371641549342691,
+    0.7544048199620327
+   ],
+   "held": 0,
+   "to_a_person": 8,
+   "failures": 0
+  }
+ },
+ "matcher": "offline",
+ "model": "",
+ "rows": [
+  {
+   "id": "city-1",
+   "group": "honest",
+   "probability": 0.9719886754601085,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "city-2",
+   "group": "honest",
+   "probability": 0.9855346811450577,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "city-3",
+   "group": "honest",
+   "probability": 0.9915654172546783,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "city-4",
+   "group": "honest",
+   "probability": 0.113758379812161,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-5",
+   "group": "honest",
+   "probability": 0.8891234019202889,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-6",
+   "group": "honest",
+   "probability": 0.9879013365609832,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-7",
+   "group": "honest",
+   "probability": 0.10897403646135104,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-8",
+   "group": "honest",
+   "probability": 0.558477261307857,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-10",
+   "group": "honest",
+   "probability": 0.9536908501514997,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "city-11",
+   "group": "honest",
+   "probability": 0.6968184368942696,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-12",
+   "group": "honest",
+   "probability": 0.5690013325681906,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-13",
+   "group": "honest",
+   "probability": 0.9706432677064551,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-14",
+   "group": "honest",
+   "probability": 0.9969166781758798,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "city-15",
+   "group": "stranger",
+   "probability": 0.11062191695938363,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-16",
+   "group": "stranger",
+   "probability": 0.10321715128322337,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-17",
+   "group": "stranger",
+   "probability": 0.12275402766548506,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-19",
+   "group": "stranger",
+   "probability": 0.12396536883526303,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-20",
+   "group": "stranger",
+   "probability": 0.9087650922974522,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "city-21",
+   "group": "stranger",
+   "probability": 0.10689804830529519,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-22",
+   "group": "other_transfer",
+   "probability": 0.0017624567396198113,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-23",
+   "group": "other_transfer",
+   "probability": 0.012208570901370735,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-24",
+   "group": "other_transfer",
+   "probability": 0.8650349549254475,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-25",
+   "group": "other_transfer",
+   "probability": 0.321108349271238,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-26",
+   "group": "other_transfer",
+   "probability": 0.12079545962364997,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-27",
+   "group": "other_transfer",
+   "probability": 0.11019831329858168,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-28",
+   "group": "other_transfer",
+   "probability": 0.010978804615935518,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-29",
+   "group": "told_one_line",
+   "probability": 0.9440537031865682,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "city-30",
+   "group": "told_one_line",
+   "probability": 0.4355067348470594,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-31",
+   "group": "told_one_line",
+   "probability": 0.9746494965728489,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "city-32",
+   "group": "told_one_line",
+   "probability": 0.9455750387900422,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "city-33",
+   "group": "told_one_line",
+   "probability": 0.5561853641138325,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "city-34",
+   "group": "told_one_line",
+   "probability": 0.9929430941628168,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-1",
+   "group": "honest",
+   "probability": 0.9909671957087898,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "regions-2",
+   "group": "honest",
+   "probability": 0.9590938246154214,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "regions-3",
+   "group": "honest",
+   "probability": 0.955496644737713,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "regions-5",
+   "group": "honest",
+   "probability": 0.9004507682409564,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-6",
+   "group": "honest",
+   "probability": 0.4087941990268526,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-7",
+   "group": "honest",
+   "probability": 0.47086637092795314,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-8",
+   "group": "honest",
+   "probability": 0.4711174067748208,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-9",
+   "group": "honest",
+   "probability": 0.9578117283098823,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "regions-10",
+   "group": "honest",
+   "probability": 0.9857105661712099,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "regions-11",
+   "group": "honest",
+   "probability": 0.24452619275983653,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-12",
+   "group": "honest",
+   "probability": 0.9494912286538956,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "regions-13",
+   "group": "honest",
+   "probability": 0.8315281642763874,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "regions-14",
+   "group": "honest",
+   "probability": 0.4409812084195164,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-15",
+   "group": "stranger",
+   "probability": 0.09948274852447422,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-16",
+   "group": "stranger",
+   "probability": 0.10760492661362714,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-17",
+   "group": "stranger",
+   "probability": 0.09817034027945463,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-18",
+   "group": "stranger",
+   "probability": 0.2068659852139188,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-19",
+   "group": "stranger",
+   "probability": 0.10742653900384846,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-20",
+   "group": "stranger",
+   "probability": 0.8595546522821835,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "regions-21",
+   "group": "stranger",
+   "probability": 0.21262184048567295,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-22",
+   "group": "other_transfer",
+   "probability": 0.11093776733480917,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-23",
+   "group": "other_transfer",
+   "probability": 0.01141600366486885,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-24",
+   "group": "other_transfer",
+   "probability": 0.012518495007773627,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-25",
+   "group": "other_transfer",
+   "probability": 0.19154737988676507,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-26",
+   "group": "other_transfer",
+   "probability": 0.4178475897337301,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-27",
+   "group": "other_transfer",
+   "probability": 0.09392149601927116,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-28",
+   "group": "other_transfer",
+   "probability": 0.012785008427088655,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-29",
+   "group": "told_one_line",
+   "probability": 0.9946950875198413,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "regions-30",
+   "group": "told_one_line",
+   "probability": 0.9824408721462,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-31",
+   "group": "told_one_line",
+   "probability": 0.9732014760661444,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "regions-32",
+   "group": "told_one_line",
+   "probability": 0.34392863451648614,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-33",
+   "group": "told_one_line",
+   "probability": 0.11637337338467857,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "regions-34",
+   "group": "told_one_line",
+   "probability": 0.8541837857599515,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "traders-1",
+   "group": "honest",
+   "probability": 0.6640851100621417,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-2",
+   "group": "honest",
+   "probability": 0.4499879274438821,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-3",
+   "group": "honest",
+   "probability": 0.41436085979778325,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-4",
+   "group": "honest",
+   "probability": 0.4129343759512839,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-5",
+   "group": "honest",
+   "probability": 0.975378638436219,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "traders-6",
+   "group": "honest",
+   "probability": 0.1270873566905175,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-7",
+   "group": "honest",
+   "probability": 0.19532793590210756,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-8",
+   "group": "honest",
+   "probability": 0.9895309194392927,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "traders-9",
+   "group": "honest",
+   "probability": 0.9548581798213346,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "traders-10",
+   "group": "honest",
+   "probability": 0.29899182791982193,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-11",
+   "group": "honest",
+   "probability": 0.9883190164458093,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "traders-12",
+   "group": "honest",
+   "probability": 0.9598325969207279,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "traders-13",
+   "group": "honest",
+   "probability": 0.9425150623862314,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "traders-14",
+   "group": "honest",
+   "probability": 0.9787003782356586,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "traders-15",
+   "group": "stranger",
+   "probability": 0.12069962357344083,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-16",
+   "group": "stranger",
+   "probability": 0.10398134389425212,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-17",
+   "group": "stranger",
+   "probability": 0.1768309133118847,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-18",
+   "group": "stranger",
+   "probability": 0.21143410136347324,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-19",
+   "group": "stranger",
+   "probability": 0.11515256338747447,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-20",
+   "group": "stranger",
+   "probability": 0.12347782095667417,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-21",
+   "group": "stranger",
+   "probability": 0.10464743224744603,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-22",
+   "group": "other_transfer",
+   "probability": 0.9754413835751684,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "traders-23",
+   "group": "other_transfer",
+   "probability": 0.9554720388812438,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "traders-24",
+   "group": "other_transfer",
+   "probability": 0.1130713735119974,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-25",
+   "group": "other_transfer",
+   "probability": 0.8705932189470845,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-26",
+   "group": "other_transfer",
+   "probability": 0.012799658029217294,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-27",
+   "group": "other_transfer",
+   "probability": 0.014958890885552497,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-28",
+   "group": "other_transfer",
+   "probability": 0.11895933073460468,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-29",
+   "group": "told_one_line",
+   "probability": 0.9922826482008646,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "traders-30",
+   "group": "told_one_line",
+   "probability": 0.9626636096954252,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "traders-31",
+   "group": "told_one_line",
+   "probability": 0.905073646846663,
+   "outcome": "person",
+   "failure": ""
+  },
+  {
+   "id": "traders-32",
+   "group": "told_one_line",
+   "probability": 0.9970285480669072,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "traders-33",
+   "group": "told_one_line",
+   "probability": 0.8312614194465664,
+   "outcome": "release",
+   "failure": ""
+  },
+  {
+   "id": "traders-34",
+   "group": "told_one_line",
+   "probability": 0.28165716954403497,
+   "outcome": "person",
+   "failure": ""
+  }
+ ]
+}

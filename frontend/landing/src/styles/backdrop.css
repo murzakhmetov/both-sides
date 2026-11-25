@@ -1,0 +1,89 @@
+/* The fixed pictures behind the page and the soft dark layers that keep the words readable. */
+
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: var(--color-ink);
+}
+
+.media-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1000ms var(--ease-calm);
+}
+
+.media-layer[data-active='true'] {
+  opacity: 1;
+}
+
+.media-fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.media-video {
+  opacity: 0;
+  transition: opacity 350ms linear;
+}
+
+.media-video[data-running='true'] {
+  opacity: 1;
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  background-image: url('../grain.png');
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* Text over a moving picture always stands on one of these. The edges are soft, so that sections do not show a seam. */
+.scrim-left,
+.scrim-full {
+  isolation: isolate;
+}
+
+.scrim-left::before,
+.scrim-full::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  mask-image: linear-gradient(180deg, transparent, #000 16svh, #000 calc(100% - 16svh), transparent);
+}
+
+.scrim-left::before {
+  background: linear-gradient(90deg, rgb(11 11 12 / 0.94) 0%, rgb(11 11 12 / 0.84) 34%, rgb(11 11 12 / 0.3) 62%, transparent 82%);
+}
+
+.scrim-full::before {
+  background: rgb(11 11 12 / 0.8);
+}
+
+.scrim-bottom {
+  background: linear-gradient(0deg, rgb(11 11 12 / 0.95) 0%, rgb(11 11 12 / 0.78) 45%, transparent 100%);
+}
+
+/* A phone held upright has its free space at the top of the picture. */
+@media (max-aspect-ratio: 4/5) {
+  .scrim-left::before {
+    background: linear-gradient(180deg, rgb(11 11 12 / 0.94) 0%, rgb(11 11 12 / 0.84) 46%, rgb(11 11 12 / 0.3) 70%, transparent 88%);
+    mask-image: linear-gradient(180deg, #000 calc(100% - 16svh), transparent);
+  }
+}
+
+/* The subject of this picture stands in the middle; the words need the upper half. */
+@media (max-aspect-ratio: 4/5) {
+  .media-layer[data-scene='whisper'] .media-fill {
+    transform: translateY(17svh);
+  }
+}

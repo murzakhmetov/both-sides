@@ -1,0 +1,17 @@
+{
+  "about": "Fixed weights of the offline matcher. Probability = 1 / (1 + exp(-sum)). Set by hand, not trained; a port must use the same numbers. An answer that lists more reasons than max_reasons (half/share not counted) shares none of them: a list of every possible reason is not an answer. A weak reason alone counts only if not both sides name something of their own.",
+  "max_reasons": 3,
+  "weak_reasons": ["half", "purchase"],
+  "weights": {
+    "bias": -2.4,
+    "stem_overlap": 1.6,
+    "trigram_cosine": 1.0,
+    "fuzzy_ratio": 0.6,
+    "shared_reason": 3.9,
+    "shared_half_only": 2.7,
+    "shared_half_extra": 0.4,
+    "reason_conflict": -2.4,
+    "relation_agrees": 1.3,
+    "relation_conflict": -2.8
+  }
+}

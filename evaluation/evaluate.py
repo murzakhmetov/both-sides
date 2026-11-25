@@ -27,6 +27,7 @@ from bothsides.decision.gate import GateInput, Outcome, decide  # noqa: E402
 from bothsides.main import use_utf8_output  # noqa: E402
 from bothsides.matching.denials import find_denial  # noqa: E402
 from bothsides.matching.factory import build_matcher  # noqa: E402
+from bothsides.matching.gemini import GeminiMatcher  # noqa: E402
 from bothsides.matching.offline import OfflineMatcher  # noqa: E402
 from bothsides.matching.types import Matcher, MatcherError, MatchResult  # noqa: E402
 from bothsides.settings import SettingsError, load_env_file  # noqa: E402
@@ -171,6 +172,8 @@ def _run_gemini(pairs: Sequence[dict[str, Any]], pause: float, sample: bool) -> 
         print(f"Gemini was not measured: {setup.status().reason}. Set GEMINI_API_KEY and install google-genai.")
         return 2
     setup.confirm_model()
+    if isinstance(matcher, GeminiMatcher):
+        matcher.use_model(matcher.model)  # no spare models: every answer belongs to the model in the report
     run_matcher("gemini", matcher, pairs, pause, setup.status().model, sample)
     return 0
 

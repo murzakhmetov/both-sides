@@ -2,6 +2,8 @@
 
 /** A request that hangs (Wi-Fi gone, laptop asleep) counts as offline after this time. */
 const TIMEOUT_MS = 8000
+/** A server that has just started takes a few seconds, and what a person did must not get lost. */
+const ACTION_TIMEOUT_MS = 15_000
 /** Online the reply to an answer waits for the comparison, and the language model may take 20 seconds. */
 const ANSWER_TIMEOUT_MS = 28_000
 
@@ -37,13 +39,19 @@ async function readEnvelope(response: Response): Promise<Envelope> {
   throw new ApiError('server_error', response.status)
 }
 
+function timeout(path: string, method: string | undefined): number {
+  // The laptop answers at once and compares later, so there a long silence is a broken connection.
+  if (method !== 'POST' || globalThis.location?.protocol !== 'https:') return TIMEOUT_MS
+  return path.endsWith('/answer') ? ANSWER_TIMEOUT_MS : ACTION_TIMEOUT_MS
+}
+
 async function send<T>(path: string, init: RequestInit): Promise<T> {
   let response: Response
   try {
     response = await fetch(path, {
       credentials: 'same-origin',
       cache: 'no-store',
-      signal: AbortSignal.timeout(init.method === 'POST' ? ANSWER_TIMEOUT_MS : TIMEOUT_MS),
+      signal: AbortSignal.timeout(timeout(path, init.method)),
       ...init,
     })
   } catch {

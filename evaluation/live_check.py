@@ -22,6 +22,7 @@ sys.path.insert(0, str(ROOT))
 from bothsides.decision.gate import GateInput, Outcome, decide  # noqa: E402
 from bothsides.main import use_utf8_output  # noqa: E402
 from bothsides.matching.factory import MatcherSetup, build_matcher  # noqa: E402
+from bothsides.matching.gemini import GeminiMatcher  # noqa: E402
 from bothsides.matching.types import Matcher, MatcherError  # noqa: E402
 from bothsides.settings import SettingsError, load_env_file  # noqa: E402
 
@@ -108,6 +109,8 @@ def main(arguments: Sequence[str]) -> int:
         print(f"Nothing was sent. {_explain_missing(setup)}")
         return 2
     setup.confirm_model()
+    if isinstance(matcher, GeminiMatcher):
+        matcher.use_model(matcher.model)  # no spare models: every answer belongs to the model named here
     status = setup.status()
     print(f"Model: {status.model} ({status.model_state})\n")
     _, passed = run_checks(matcher, parsed.pause)

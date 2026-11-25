@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import time
+
 import pytest
 
+from bothsides import config
 from bothsides.matching.chain import FallbackMatcher
 from bothsides.matching.factory import build_matcher
 from bothsides.matching.gemini_models import ModelState, choose_model, spare_models
@@ -110,6 +113,57 @@ def test_model_from_the_environment_is_replaced_when_not_listed() -> None:
     assert (setup.status().model, setup.status().model_state) == ("gemini-3.6-flash", "replaced")
     setup.matcher.compare("брат аренда", "брату аренда")
     assert client.interactions.calls[0]["model"] == "gemini-3.6-flash"
+
+
+def test_the_first_check_can_be_part_of_a_request() -> None:
+    client = FakeGeminiClient(gemini_reply(), models=["gemini-3.6-flash"])
+    setup = build_matcher(offline=False, env={"GEMINI_API_KEY": KEY}, client_factory=lambda key: client)
+    assert setup.status().model_state == "checking"
+    setup.confirm_model_now()
+    assert (setup.status().model, setup.status().model_state) == ("gemini-3.6-flash", "replaced")
+    client.models = None
+    setup.confirm_model_now()
+    assert setup.status().model_state == "replaced"
+    build_matcher(offline=True, env={}).confirm_model_now()
+
+
+def test_a_client_that_fails_leaves_the_model_unconfirmed() -> None:
+    class Broken:
+        models = FakeGeminiClient().models
+
+        @property
+        def interactions(self) -> object:
+            raise RuntimeError("no module")
+
+    setup = build_matcher(offline=False, env={"GEMINI_API_KEY": KEY}, client_factory=lambda key: Broken())
+    setup.confirm_model_now()
+    assert setup.status().model_state == "unconfirmed"
+    assert setup.matcher.compare("брат аренда", "брату аренда").fallback_code == "error"
+
+
+def test_a_list_that_hangs_does_not_hold_the_page(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(config, "ONLINE_LIST_TIMEOUT_SECONDS", 0.2)
+    client = FakeGeminiClient(gemini_reply())
+    client.models.list = lambda: time.sleep(3)  # type: ignore[method-assign]
+    setup = build_matcher(offline=False, env={"GEMINI_API_KEY": KEY}, client_factory=lambda key: client)
+    started = time.monotonic()
+    setup.confirm_model_now()
+    assert time.monotonic() - started < 1.5
+    assert setup.status().model_state == "unconfirmed"
+
+
+def test_a_failed_check_within_a_request_is_made_again(monkeypatch: pytest.MonkeyPatch) -> None:
+    client = FakeGeminiClient(gemini_reply(), models=RuntimeError("network down"))
+    setup = build_matcher(offline=False, env={"GEMINI_API_KEY": KEY}, client_factory=lambda key: client)
+    setup.confirm_model_now()
+    assert setup.status().model_state == "unconfirmed"
+    client.models.names = ["gemini-3.8-flash"]
+    setup.confirm_model_now()
+    assert setup.status().model_state == "unconfirmed"
+    now = time.monotonic()
+    monkeypatch.setattr(time, "monotonic", lambda: now + config.GEMINI_CHECK_AGAIN_SECONDS + 1)
+    setup.confirm_model_now()
+    assert setup.status().model_state == "confirmed"
 
 
 def test_failed_model_list_keeps_the_wanted_model() -> None:

@@ -84,11 +84,10 @@ One long scroll in English, Russian and Kazakh (beta): the problem, the insight,
 
 ![Landing page: start, six steps, outcomes, example, mini-demo, status, phones](docs/screens/landing.jpg)
 
-- **Mini-demo.** `POST /api/try` runs the offline matcher and the content rule of the app, the same code and the same test cases ([match_cases.json](tests/shared/match_cases.json)). It never asks a language model, stores nothing, writes no answer to the log, takes at most 300 characters per answer and 30 tries a minute per address.
+- **Mini-demo.** `POST /api/try` runs the offline matcher and the content rule of the app, the same code and the same test cases ([match_cases.json](tests/shared/match_cases.json)). It never asks a language model, stores nothing, writes no answer to the log, takes at most 300 characters per answer and 60 tries a minute per address.
 - **Words.** All in one file, [texts.ts](frontend/landing/src/texts.ts); only the typed example answers stand in [examples.ts](frontend/landing/src/examples.ts), because they are never translated, and `index.html` holds the English title and description for the moment before the script runs. Status words, questions and reasons come from the app's own files. The numbers come from `evaluation/results/offline.json` when the page is built.
 - **Pictures.** Made with AI (Google Flow), and the page says so. No logo of the bank, no faces, no real notes. Sources, prompts and cuts: [part2-landing-page.md](docs/part2-landing-page.md).
 - **Motion.** One video plays at a time, a button stops all of them, and "reduce motion" of the system shows still pictures only. Phones get their own upright files.
-- **Still to fill in:** team name, contact and the place for the logo (`closing.team`, `closing.contact`, `closing.logo` in `texts.ts`), then `npm run build`.
 
 Checked in Edge and Chrome, and in the Firefox and WebKit engines of Playwright on Windows, at emulated sizes. Not checked: real phones, Safari on a real iPhone, a screen reader, a native speaker.
 
@@ -102,13 +101,16 @@ The offline matcher compares until `GEMINI_API_KEY` is set on Vercel (the comman
 npx vercel env add GEMINI_API_KEY production --sensitive
 ```
 
-One running copy asks Gemini for at most 20 comparisons a minute; after that the offline matcher answers. The mini-demo of the landing page never asks Gemini. On Vercel `GEMINI_MODEL` is `gemini-3.5-flash`: on 25 November 2026 the default `gemini-3.8-flash` answered every request with 503 (overloaded).
+To change the key, remove it first (`npx vercel env rm GEMINI_API_KEY production`), add the new one and deploy again. Without the new deployment the site goes on with the old key, and with the word list once that key is deleted.
 
-Functions on Vercel stop and start as they like and share no memory. So online every visitor has a board of their own: what happened on it travels in signed cookies, and any running copy plays it again ([online.py](bothsides/server/online.py)). It differs from the laptop in three points:
+The page is public, so the key has a budget: at most 16 requests a minute for one visitor, 90 a minute and 3,000 a day for one running copy; after that the offline matcher answers. Only a limit set at Google covers all running copies together. The mini-demo of the landing page never asks Gemini. On Vercel `GEMINI_MODEL` is `gemini-3.5-flash`: on 25 November 2026 the default `gemini-3.8-flash` answered every request with 503 (overloaded).
+
+Functions on Vercel stop and start as they like and share no memory. So online every visitor has a board of their own: what happened on it travels in signed cookies, and any running copy plays it again ([online.py](bothsides/server/online.py)). It differs from the laptop in four points:
 
 - staff pages are open without a password, because a visitor sees only the own board with invented people;
 - one board per browser: two real phones cannot share a case (use the laptop for that);
-- a board starts again after two hours without an action, and after a new deployment.
+- a board starts again after two hours without an action, and after a new deployment;
+- when the cookies (9.9 KB) are full, what a later run of the same scene has wiped out leaves the log; the board stays the same.
 
 After a change run `npm run build` in `frontend/`, then from this folder:
 
@@ -154,11 +156,11 @@ Only a person ends a hold. The deadline is 18:00 on the fifth working day, count
 
 ## The AI part
 
-- Gemini through the Interactions API of `google-genai` with structured output, `store=False`, one attempt per model, 20 seconds in total. While a model is overloaded (HTTP 5xx or 429) or slow, up to three other listed Flash models are asked within the same 20 seconds; the one that answered is asked first for two minutes. The call was written from the documentation page on structured outputs and the source of version 3.6.1 on 24 November 2026.
+- Gemini through the Interactions API of `google-genai` with structured output, `store=False`, one attempt per model, 20 seconds in total. While a model is overloaded (HTTP 5xx or 429) or takes more than 6 seconds, up to three other Flash models are asked within the same 20 seconds (from Google's list; before it has been read, from the config); the one that answered is asked first for two minutes. The case file and the stage name the model that answered. The evaluation and the live check ask one model only. The call was written from the documentation page on structured outputs and the source of version 3.6.1 on 24 November 2026.
 - Sent: both answers, after digits, amounts, currency words, contacts and one leading name followed by a comma are removed. A name is removed only if it is in [names.json](bothsides/data/names.json); relation words like "Брат," or "Жене," stay. Never sent: account data, amounts, the transfer message.
 - The answers travel as JSON data with the instruction to ignore any instruction inside them. The reply is validated field by field.
 - On timeout, error, invalid JSON or a missing key the offline matcher answers. If nothing answers, a person decides.
-- The model must be on Google's list; otherwise the newest listed Flash model is used, and the start page says so. If the list cannot be read at the start, it is asked again after the next comparison.
+- The model must be on Google's list; otherwise the newest listed Flash model is used, and the start page says so. If the list cannot be read at the start, it is asked again after the next comparison. Online a request of the start page reads it, because the host stops every thread between requests, and again 20 seconds after a failure.
 
 The offline matcher uses the standard library only: word stems, a Kazakh-Russian-English word list, character trigrams, a fuzzy ratio and relation agreement, combined by a logistic function with fixed weights.
 

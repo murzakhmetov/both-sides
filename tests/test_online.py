@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import random
 import threading
 from typing import Any
 
@@ -167,10 +168,17 @@ def test_a_long_life_still_fits(visitor: Visitor, clock: ManualClock) -> None:
 
 
 def test_fitted_keeps_the_last_scene() -> None:
-    events = tuple(Event(i, "/api/scenes/sister/start" if i % 5 == 0 else "/api/phone/receiver/answer", {"text": "я" * 250}) for i in range(90))
+    dice = random.Random(1)
+    events = tuple(
+        Event(i + 1, "/api/scenes/sister/start", {})
+        if i % 5 == 0
+        else Event(i + 1, "/api/phone/receiver/answer", {"case_id": f"BS-2026-{4112 + i // 5}", "text": dice.randbytes(120).hex()})
+        for i in range(290)
+    )
     short = fitted(Log("r" * 24, 0, 4107, events), SECRET, 4)
-    assert 0 < len(short.events) < 90
-    assert short.events[-1] == events[-1]
+    assert short.events[-5:] == events[-5:]
+    assert sum(event.path.endswith("/start") for event in short.events) == 58
+    assert len(short.events) == 58 + 4
 
 
 def test_cookies_are_for_the_server_only(visitor: Visitor) -> None:

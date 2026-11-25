@@ -18,24 +18,17 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from bothsides import config  # noqa: E402
 from bothsides.clock import SystemClock  # noqa: E402
 from bothsides.matching.factory import build_matcher  # noqa: E402
+from bothsides.server.budget import Budget  # noqa: E402
 from bothsides.server.messages import Request, Response, error_response  # noqa: E402
 from bothsides.server.online import OnlineApp  # noqa: E402
-from bothsides.server.ratelimit import RateLimiter  # noqa: E402
 from bothsides.server.security import SECURITY_HEADERS  # noqa: E402
 
 #: The same in every running copy of one deployment; unknown outside of the account.
 _SECRET = (os.environ.get("VERCEL_DEPLOYMENT_ID") or os.environ.get("VERCEL_URL") or secrets.token_hex(16)).encode("utf-8")
 _CLOCK = SystemClock()
-_BUDGET = RateLimiter(config.ONLINE_GEMINI_CALLS, config.RATE_WINDOW)
-
-
-def _may_ask() -> bool:
-    return _BUDGET.wait_seconds("gemini", _CLOCK.now()) == 0
-
-
-_SETUP = build_matcher(False, os.environ, may_ask=_may_ask)
-_SETUP.confirm_model_in_background()
-_APP = OnlineApp(_SETUP, _CLOCK, _SECRET)
+_BUDGET = Budget(_CLOCK)
+_SETUP = build_matcher(False, os.environ, may_ask=_BUDGET.may_ask)
+_APP = OnlineApp(_SETUP, _CLOCK, _SECRET, _BUDGET)
 
 
 def _target(raw: str) -> str:
@@ -74,7 +67,10 @@ class handler(BaseHTTPRequestHandler):  # noqa: N801  (Vercel looks for this nam
             self.rfile.read(min(length, config.MAX_REQUEST_BYTES))
             self._send(error_response(413, "too_large").with_headers(*SECURITY_HEADERS))
         else:
-            self._send(_APP.handle(self._request(self.rfile.read(length))))
+            request = self._request(self.rfile.read(length))
+            if request.path == "/api/status":
+                _SETUP.confirm_model_now()
+            self._send(_APP.handle(request))
 
     def _send(self, response: Response) -> None:
         self.send_response(response.status)

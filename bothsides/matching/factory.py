@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import threading
+import time
 from dataclasses import dataclass
 from typing import Any, Callable, Mapping
 
@@ -39,6 +40,7 @@ class MatcherSetup:
         self._reason = reason
         self._model_state = ModelState.CHECKING if gemini else None
         self._checking = threading.Lock()
+        self._check_after = 0.0
 
     @property
     def matcher(self) -> Matcher:
@@ -61,20 +63,18 @@ class MatcherSetup:
             last_failure=self._chain.last_failure,
         )
 
-    def confirm_model(self) -> None:
+    def confirm_model(self, seconds: float = config.GEMINI_LIST_TIMEOUT_SECONDS) -> None:
         """Ask Google for its model list and switch models if needed."""
         if self._gemini is None or not self._checking.acquire(blocking=False):
             return
         try:
-            self._check_list(self._gemini)
+            self._check_list(self._gemini, seconds)
         finally:
             self._checking.release()
 
-    def _check_list(self, gemini: GeminiMatcher) -> None:
+    def _check_list(self, gemini: GeminiMatcher, seconds: float) -> None:
         try:
-            listed = call_with_deadline(
-                lambda: list_flash_names(self._client), config.GEMINI_LIST_TIMEOUT_SECONDS
-            )
+            listed = call_with_deadline(lambda: list_flash_names(self._client), seconds)
         except Exception as error:
             _LOG.warning("model list failed: %s", type(error).__name__)
             self._model_state = ModelState.UNCONFIRMED
@@ -93,10 +93,26 @@ class MatcherSetup:
         if self._gemini is not None:
             threading.Thread(target=self._prepare, name="model-check", daemon=True).start()
 
-    def _prepare(self) -> None:
-        if self._gemini is not None:
+    def confirm_model_now(self) -> None:
+        """The check within a request, for a host that stops threads between requests.
+
+        After a failure it is made again, but not at every request.
+        """
+        open_ = self._model_state in (ModelState.CHECKING, ModelState.UNCONFIRMED)
+        if open_ and time.monotonic() >= self._check_after:
+            self._check_after = time.monotonic() + config.GEMINI_CHECK_AGAIN_SECONDS
+            self._prepare(config.ONLINE_LIST_TIMEOUT_SECONDS)
+
+    def _prepare(self, seconds: float = config.GEMINI_LIST_TIMEOUT_SECONDS) -> None:
+        if self._gemini is None:
+            return
+        try:
             self._gemini.warm_up()
-        self.confirm_model()
+        except Exception as error:
+            _LOG.warning("gemini client failed: %s", type(error).__name__)
+            self._model_state = ModelState.UNCONFIRMED
+            return
+        self.confirm_model(seconds)
 
 
 def _offline(reason: str) -> MatcherSetup:

@@ -238,10 +238,10 @@ What to check: meaning, spelling, polite form (сіз), terms a bank would use, 
 | `start.phones.online` | Осы браузердің екі терезесінде ашыңыз. | Откройте в двух окнах этого браузера. | Open them in two windows of this browser. | |
 | `start.staff` | Қызметкерлерге | Для сотрудников | For staff | |
 | `start.staff.text` | Құпиясөз керек. | Нужен пароль. | Password needed. | |
-| `start.staff.online` | Құпиясөз керек емес: бұл сіздің оқу тақтаңыз. Оны тек осы браузер көреді, екі сағаттан кейін ол қайта басталады. | Пароль не нужен: это ваша учебная доска. Её видит только этот браузер, через два часа она начинается заново. | No password needed: this is your own practice board. Only this browser sees it, and after two hours it starts again. | |
+| `start.staff.online` | Құпиясөз керек емес: бұл сіздің оқу тақтаңыз. Оны басқа келушілер көрмейді, екі сағаттан кейін ол қайта басталады. | Пароль не нужен: это ваша учебная доска. Другие посетители её не видят, через два часа она начинается заново. | No password needed: this is your own practice board. Other visitors do not see it, and after two hours it starts again. | |
 | `start.matcher` | Жауаптарды кім салыстырады | Кто сравнивает ответы | Who compares the answers | |
 | `start.matcher.gemini` | Тілдік модель {model} | Языковая модель {model} | Language model {model} | |
-| `start.matcher.gemini_note` | Модель 20 секундта жауап бермесе, офлайн сөздік салыстырады. | Если модель не ответит за 20 секунд, сравнит офлайн-словарь. | If the model does not answer within 20 seconds, the offline word list compares. | |
+| `start.matcher.gemini_note` | Екі жауап Google Gemini-ге сандарсыз, сомаларсыз және шот деректерінсіз жіберіледі. Модель 20 секундта жауап бермесе, офлайн сөздік салыстырады. | Оба ответа уходят в Google Gemini без чисел, сумм и данных счетов. Если модель не ответит за 20 секунд, сравнит офлайн-словарь. | Both answers go to Google's Gemini, without numbers, amounts and account data. If the model does not answer within 20 seconds, the offline word list compares. | |
 | `start.matcher.offline` | Офлайн сөздік | Офлайн-словарь | Offline word list | |
 | `start.matcher.offline.forced` | Сервер --offline арқылы іске қосылған. | Сервер запущен с --offline. | The server was started with --offline. | |
 | `start.matcher.offline.no_key` | GEMINI_API_KEY айнымалысы берілмеген, сондықтан тілдік модель өшірулі. | Переменная GEMINI_API_KEY не задана, поэтому языковая модель выключена. | GEMINI_API_KEY is not set, so the language model is off. | |

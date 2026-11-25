@@ -178,3 +178,29 @@ def test_the_app_function_finds_the_address(raw: str, target: str) -> None:
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     assert module._target(raw) == target
+
+
+def test_the_app_function_checks_the_model_within_a_request(monkeypatch: pytest.MonkeyPatch) -> None:
+    spec = importlib.util.spec_from_file_location("vercel_app", ROOT / "api" / "app.py")
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    checks: list[str] = []
+
+    class Setup:
+        def confirm_model_now(self) -> None:
+            checks.append("now")
+
+    monkeypatch.setattr(module, "_SETUP", Setup())
+    server = ThreadingHTTPServer(("127.0.0.1", 0), module.handler)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    try:
+        for path in ("/api/session", "/api/app?p=status", "/api/status", "/api/stage"):
+            connection = http.client.HTTPConnection("127.0.0.1", server.server_address[1], timeout=5)
+            connection.request("GET", path, headers={"Host": HOST, "x-forwarded-host": HOST})
+            assert connection.getresponse().status == 200
+            connection.close()
+    finally:
+        server.shutdown()
+        server.server_close()
+    assert checks == ["now", "now"]

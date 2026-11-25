@@ -13,6 +13,7 @@ import logging
 import secrets
 import threading
 from collections import OrderedDict
+from contextlib import nullcontext
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Callable
@@ -26,7 +27,8 @@ from ..matching.factory import MatcherSetup
 from ..matching.types import Matcher, MatcherError, MatchResult, MatchSource, Tri
 from .app import App
 from .auth import StaffAuth, random_password
-from .boardcookie import Event, Log, cookies, fitted, read
+from .budget import Budget
+from .boardcookie import Event, Log, cookies, fitted, read, seed_cookie
 from .messages import Request, Response, error_response
 from .ratelimit import RateLimiter
 from .security import SECURITY_HEADERS
@@ -35,6 +37,8 @@ _LOG = logging.getLogger(__name__)
 _MAX_ROOMS = 300
 #: The same on every new board, so that the frames of one page never show different numbers.
 _FIRST_NUMBER = 4107
+#: What the routes of a phone read from a request.
+_FIELDS = ("case_id", "text")
 #: These change nothing on a board.
 _NOT_KEPT = frozenset({"/api/try", "/api/login", "/api/logout"})
 _REPLAY_HEADERS = {"host": "replay.invalid", "origin": "https://replay.invalid", "content-type": "application/json"}
@@ -135,11 +139,31 @@ class _BoardMatcher:
         return _result(turn.match[1:])
 
 
-class _AtOnce:
-    """Compares before the reply: after it, the host may stop the function."""
+class _Comparisons:
+    """Compares before the reply: after it, the host may stop the function.
+
+    A comparison that is played again waits for the moment when it ended, because what
+    happened meanwhile may have changed the decision.
+    """
+
+    def __init__(self, turns: _Turns) -> None:
+        self._turns = turns
+        self._waiting: list[tuple[_Turn, Callable[[], None]]] = []
 
     def submit(self, work: Callable[[], None]) -> None:
-        work()
+        turn = self._turns.now
+        if turn is None or not turn.again or not turn.match:
+            work()
+        else:
+            self._waiting = sorted((*self._waiting, (turn, work)), key=lambda item: item[0].match[0])
+
+    def end(self, before: float) -> None:
+        """Play the ends of the comparisons that had ended *before* this time."""
+        while self._waiting and self._waiting[0][0].match[0] < before:
+            (turn, work), *self._waiting = self._waiting
+            self._turns.now = turn
+            work()
+            self._turns.now = None
 
 
 class SandboxApp(App):
@@ -166,10 +190,24 @@ class _Room:
             self.turns.now = None
 
 
+def _fields(request: Request) -> dict[str, str]:
+    """What an action on a phone says. Read before the action: a strange body must not fail after it."""
+    if request.method != "POST" or not request.path.startswith("/api/phone/"):
+        return {}
+    try:
+        data = json.loads(request.body)
+    except (ValueError, RecursionError):
+        return {}
+    if not isinstance(data, dict):
+        return {}
+    return {name: data[name] for name in _FIELDS if isinstance(data.get(name), str)}
+
+
 class OnlineApp:
     """Finds or rebuilds the visitor's board and lets its app answer."""
 
-    def __init__(self, setup: MatcherSetup, clock: Clock, secret: bytes) -> None:
+    def __init__(self, setup: MatcherSetup, clock: Clock, secret: bytes, budget: Budget | None = None) -> None:
+        self._budget = budget
         self._setup = setup
         self._clock = clock
         self._secret = secret
@@ -191,54 +229,80 @@ class OnlineApp:
             return error_response(500, "server_error").with_headers(*SECURITY_HEADERS)
 
     def _answer(self, request: Request) -> Response:
+        sent = read(request.headers.get("cookie", ""), self._secret)
+        # Visitors behind one address (one Wi-Fi) do not use up each other's requests.
+        visitor = sent.room if sent else request.address
         limiter = self._writes if request.method == "POST" else self._reads
-        wait = limiter.wait_seconds(request.address, self._clock.now())
+        wait = limiter.wait_seconds(visitor, self._clock.now())
         if wait > 0:
             return error_response(429, "rate_limited", (("Retry-After", str(wait)),)).with_headers(*SECURITY_HEADERS)
-        sent = read(request.headers.get("cookie", ""), self._secret)
         with self._lock:
             room = self._room(sent)
             turn = self._turn(room.log) if request.method == "POST" else None
+        fields = _fields(request)
         # Without the lock: the language model takes seconds, and the other phones go on asking.
-        response = room.handle(request, turn)
-        with self._lock:
-            kept = turn is not None and response.status == 200 and request.path not in _NOT_KEPT
-            if kept:
-                event = Event(turn.at, request.path, json.loads(request.body or b"{}"), turn.match)
-                room.log = fitted(room.log.with_event(event), self._secret, self._background)
-            if not kept and sent is not None:
-                return response
-            log = room.log
+        with self._budget.of(visitor) if self._budget else nullcontext():
+            response = room.handle(request, turn)
         secure = request.headers.get("x-forwarded-proto", "") == "https"
-        return Response(response.status, (*response.headers, *cookies(log, self._secret, secure)), response.body)
+        if turn is not None and response.status == 200 and request.path not in _NOT_KEPT:
+            event = Event(turn.at, request.path, fields, turn.match)
+            log = self._kept(room, event)
+            return Response(response.status, (*response.headers, *cookies(log, self._secret, secure, event)), response.body)
+        # Only a visitor who has done nothing yet gets a board without doing anything. The
+        # cookie has a name of its own: a late reply must not wipe out the first action.
+        if turn is None and sent is None and response.status == 200:
+            first = seed_cookie(room.log, self._secret, secure)
+            return Response(response.status, (*response.headers, first), response.body)
+        return response
+
+    def _kept(self, room: _Room, event: Event) -> Log:
+        """Put what happened into the log of the board."""
+        with self._lock:
+            current = self._rooms.get(room.log.room, room)
+            log = fitted(current.log.merged(room.log).with_event(event), self._secret, self._background)
+            if current is room:
+                room.log = log
+            else:
+                # News from another running copy came in while the model was thinking.
+                current = self._rebuilt(log)
+            self._remember(current)
+            return log
 
     def _turn(self, log: Log) -> _Turn:
-        """A turn that begins now, and not before anything this board already knows."""
-        last = log.events[-1].at if log.events else log.created
-        return _Turn(max(_milliseconds(self._clock.now()), last))
+        """A turn that begins now, and after everything that this board already knows."""
+        return _Turn(max(_milliseconds(self._clock.now()), log.last + 1))
 
     def _room(self, sent: Log | None) -> _Room:
-        log = sent or Log(secrets.token_urlsafe(18), _milliseconds(self._clock.now()), _FIRST_NUMBER)
-        known = self._rooms.get(log.room)
-        # The memory may be ahead of a cookie that a slow reply has not brought yet.
-        if known is None or (len(log.events), log.created) > (len(known.log.events), known.log.created):
+        if sent is None:
+            return self._rebuilt(Log(secrets.token_urlsafe(18), _milliseconds(self._clock.now()), _FIRST_NUMBER))
+        known = self._rooms.get(sent.room)
+        # The memory may know more than a cookie that a slow reply has not brought yet, and less
+        # than one that another running copy has written.
+        log = known.log.merged(sent) if known else sent
+        if known is None or log != known.log:
             known = self._rebuilt(log)
-        self._rooms[log.room] = known
-        self._rooms.move_to_end(log.room)
+        self._remember(known)
+        return known
+
+    def _remember(self, room: _Room) -> None:
+        self._rooms[room.log.room] = room
+        self._rooms.move_to_end(room.log.room)
         while len(self._rooms) > _MAX_ROOMS:
             self._rooms.popitem(last=False)
-        return known
 
     def _rebuilt(self, log: Log) -> _Room:
         turns = _Turns()
         clock = _BoardClock(self._clock, turns)
         turns.now = _Turn(log.created, again=True)
         matcher = _BoardMatcher(self._setup.matcher, self._clock, turns)
-        service = CaseService(clock=clock, matcher=matcher, executor=_AtOnce(), first_number=log.first)
+        comparisons = _Comparisons(turns)
+        service = CaseService(clock=clock, matcher=matcher, executor=comparisons, first_number=log.first)
         room = _Room(SandboxApp(service, self._auth, self._setup, clock, allowed_hosts=_EveryHost()), turns, log)
         for event in log.events:
+            comparisons.end(event.at)
             body = json.dumps(event.data).encode("utf-8")
             again = _Turn(event.at, again=True, match=event.match)
             room.handle(Request("POST", event.path, _REPLAY_HEADERS, body, "replay"), again)
+        comparisons.end(float("inf"))
         turns.now = None
         return room

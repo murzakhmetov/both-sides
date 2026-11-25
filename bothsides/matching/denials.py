@@ -122,6 +122,7 @@ def _turned_around(text: str, words: tuple[str, ...]) -> frozenset[int]:
     return frozenset() if asks else _covered(words, _exceptions())
 
 
+@lru_cache(maxsize=1024)
 def find_denial(text: str) -> DenialKind | None:
     """Return the kind of denial typed in *text*, or None."""
     words = tokens(text)

@@ -110,6 +110,13 @@ def test_one_wifi_carries_many_visitors(clock: ManualClock) -> None:
     assert states == {200}
 
 
+def test_one_address_still_has_a_limit(clock: ManualClock, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(config, "ONLINE_READS_PER_ADDRESS", 40)
+    app = copy_of_the_app(clock)
+    states = [Visitor(app).send("GET", "/api/session").status for _ in range(45)]
+    assert states == [200] * 40 + [429] * 5
+
+
 def test_one_visitor_still_has_a_limit(visitor: Visitor) -> None:
     visitor.get("/api/status")
     assert 429 in {visitor.send("GET", "/api/session").status for _ in range(config.RATE_LIMIT_READS + 5)}
@@ -206,6 +213,25 @@ def test_two_replies_in_any_order_lose_nothing(clock: ManualClock) -> None:
             boards.append(seen(visitor))
         assert boards[0] == boards[1] == boards[2], action
         assert boards[0]["stage"]["scene"] == ("stranger" if "stranger" in action else "brother")
+
+
+def test_a_lost_reply_is_made_up_for(clock: ManualClock) -> None:
+    app = model_app(gemini_result(0.02, Tri.FALSE, Tri.FALSE), clock)
+    visitor = Visitor(app)
+    visitor.post("/api/scenes/sister/start")
+    visitor.answer("receiver", SISTER_RECEIVER)
+    leaving = Visitor(app)
+    leaving.jar = dict(visitor.jar)
+    leaving.post("/api/phone/sender/answer", {"case_id": visitor.case_id(), "text": SISTER_SENDER})
+    assert visitor.get("/api/stage")["case"]["state"] == "held"
+    board = seen(visitor)
+    visitor.app = model_app(gemini_result(0.99), clock)
+    assert seen(visitor) == board
+
+
+def test_a_visitor_who_looks_again_gets_no_cookies(visitor: Visitor) -> None:
+    visitor.post("/api/scenes/sister/start")
+    assert all(set_cookies(visitor.send("GET", path)) == [] for path in ("/api/stage", "/api/phone/sender", "/api/cases"))
 
 
 def test_two_taps_on_two_copies_before_the_first_reply(visitor: Visitor, clock: ManualClock) -> None:
@@ -415,11 +441,27 @@ def test_real_lives_fit_for_a_long_time(clock: ManualClock) -> None:
         visitor.answer("receiver", story(dice, "брат прислал"))
         visitor.answer("sender", story(dice, "брату за"))
         clock.advance(seconds=25)
-    assert sum(len(value) for value in visitor.jar.values()) < 14_500
+    assert sum(len(value) for value in visitor.jar.values()) < 11_500
     before = seen(visitor)
     visitor.app = model_app(gemini_result(0.5), clock)
     assert seen(visitor) == before
     assert before["stage"]["case"]["id"].endswith(f"-{4111 + 60}")
+
+
+def test_the_cookies_stay_under_the_limit_of_hosts(clock: ManualClock) -> None:
+    dice = random.Random(11)
+    letters = "абвгдежзийклмнопрстуфхцчшщъыьэюяәғқңөұүһі"
+    visitor, biggest = Visitor(model_app(None, clock)), 0
+    for _ in range(45):
+        text = "".join(dice.choice("abcdefghijklmnopqrstuvwxyzABCDEFGHIJ0123456789 ") for _ in range(config.MAX_NOTE_LENGTH))
+        visitor.app._setup.matcher.result = MatchResult(0.5, Tri.TRUE, Tri.TRUE, text, MatchSource.GEMINI, "gemini-3.5-flash-lite")
+        visitor.post("/api/scenes/sister/start")
+        for side in ("receiver", "sender"):
+            clock.advance(milliseconds=261)
+            visitor.answer(side, "".join(dice.choice(letters) for _ in range(300)))
+        clock.advance(milliseconds=261)
+        biggest = max(biggest, sum(len(key) + len(value) + 3 for key, value in visitor.jar.items()))
+    assert 8_000 < biggest < 13_500
 
 
 def test_the_last_resort_still_ends(clock: ManualClock) -> None:
@@ -428,7 +470,7 @@ def test_the_last_resort_still_ends(clock: ManualClock) -> None:
     events = tuple(
         Event(i + 1, "/api/phone/receiver/answer", {"case_id": "BS-2026-4111", "text": "".join(dice.choice(letters) for _ in range(300))}) for i in range(200)
     )
-    assert len(cookies(fitted(Log("r" * 24, 0, 4107, events), SECRET, 4), SECRET, True)) == 3
+    assert len(cookies(fitted(Log("r" * 24, 0, 4107, events), SECRET, 4), SECRET, True)) == 2
 
 
 def test_a_log_that_packs_well_can_still_be_read(clock: ManualClock) -> None:

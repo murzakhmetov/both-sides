@@ -19,11 +19,12 @@ SEED = "bs_new"
 #: One action each. Two replies of two running copies may come in any order: the later one
 #: takes the place of the board, but not of the other action.
 ACTION = "bs_act"
-_SLOTS = (*"01234567", "c")
+_SLOTS = (*"012345", "c")
 #: Two actions that follow each other at a human pace get two cookies.
-_PACE_MILLISECONDS = 200
-_PARTS = 3
-_PART_LENGTH = 3300
+_PACE_MILLISECONDS = 250
+#: All cookies together stay under 16 KB, the most that hosts take in one header.
+_PARTS = 2
+_PART_LENGTH = 3600
 _MAX_EVENTS = 300
 _MAX_PLAIN = 64 * 1024
 _SIGNATURE_BYTES = 16
@@ -180,7 +181,7 @@ def _flags(secure: bool) -> str:
 
 def _slot(action: Event) -> str:
     """A comparison takes seconds, so it never shares a cookie with what happens meanwhile."""
-    return "c" if action.match is not None else str(action.at // _PACE_MILLISECONDS % 8)
+    return "c" if action.match is not None else str(action.at // _PACE_MILLISECONDS % 6)
 
 
 def cookies(log: Log, secret: bytes, secure: bool, action: Event | None = None) -> tuple[tuple[str, str], ...]:

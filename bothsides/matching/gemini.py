@@ -200,6 +200,7 @@ class GeminiMatcher:
             return call_with_deadline(lambda: self._client.interactions.create(**request), seconds)
         except DeadlineExceeded:
             code = "timeout"
+            _LOG.warning("gemini request failed: %s took more than %.1f s", model, seconds)
         except Exception as error:
             # Only the class name and the HTTP status are logged: messages may hold request details.
             name = type(error).__name__

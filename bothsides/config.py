@@ -108,9 +108,12 @@ GEMINI_KEEP_SECONDS = 120.0
 GEMINI_TRY_SECONDS = 6.0
 #: A try with a spare model needs at least so much of the wall-clock limit.
 GEMINI_NEXT_TRY_SECONDS = 4.0
-#: Online, requests to Gemini: of one visitor a minute, of one running copy a minute and a day.
+#: Online, requests to Gemini: of one visitor a minute, of one address (a hall with one Wi-Fi) a
+#: minute and a day, of one running copy a minute and a day.
 #: One comparison is one request, up to four while models are overloaded. Beyond, the offline matcher answers.
 ONLINE_GEMINI_SHARE = 16
+ONLINE_GEMINI_ADDRESS = 60
+ONLINE_GEMINI_ADDRESS_A_DAY = 1500
 ONLINE_GEMINI_CALLS = 90
 ONLINE_GEMINI_CALLS_A_DAY = 3000
 #: "minimal" is rejected by gemini-3.8-flash, "low" is the fastest allowed level.
@@ -156,6 +159,9 @@ RATE_WINDOW = timedelta(seconds=60)
 RATE_LIMIT_READS = 1200
 RATE_LIMIT_PAGES = 1200
 RATE_LIMIT_WRITES = 120
+#: Online the limits above hold for one visitor; a whole address may make so many requests.
+ONLINE_READS_PER_ADDRESS = 24000
+ONLINE_WRITES_PER_ADDRESS = 2400
 RATE_LIMIT_LOGIN = 20
 #: Public matcher for the landing page of Part 2.
 RATE_LIMIT_TRY = 60

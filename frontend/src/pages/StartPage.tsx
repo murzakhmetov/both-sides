@@ -115,6 +115,8 @@ export function StartPage() {
   const { t } = useI18n()
   const status = usePoll<StatusView>('/api/status', POLL_MS)
   const sandbox = status.data?.sandbox ?? false
+  // Until the server has said which of the two it is, neither sentence is right.
+  const told = (online: Parameters<typeof t>[0], laptop: Parameters<typeof t>[0]) => (status.data ? t(sandbox ? online : laptop) : '\u00a0')
   useTitle(t('start.title'))
   return (
     <div className="flex min-h-dvh flex-col">
@@ -122,8 +124,8 @@ export function StartPage() {
       <main className="mx-auto -mt-16 w-full max-w-5xl flex-1 px-4 pb-10 sm:px-6">
         <Problem code={status.errorCode} />
         <div className="grid gap-4 md:grid-cols-2">
-          <Links items={PHONES} locked={false} text={t(sandbox ? 'start.phones.online' : 'start.phones.text')} title={t('start.phones')} />
-          <Links items={STAFF} locked={!sandbox} text={t(sandbox ? 'start.staff.online' : 'start.staff.text')} title={t('start.staff')} />
+          <Links items={PHONES} locked={false} text={told('start.phones.online', 'start.phones.text')} title={t('start.phones')} />
+          <Links items={STAFF} locked={status.data !== null && !sandbox} text={told('start.staff.online', 'start.staff.text')} title={t('start.staff')} />
         </div>
 
         <Card className="mt-4 p-5">

@@ -215,6 +215,8 @@ class OnlineApp:
         self._lock = threading.RLock()
         self._reads = RateLimiter(config.RATE_LIMIT_READS, config.RATE_WINDOW)
         self._writes = RateLimiter(config.RATE_LIMIT_WRITES, config.RATE_WINDOW)
+        self._reads_here = RateLimiter(config.ONLINE_READS_PER_ADDRESS, config.RATE_WINDOW)
+        self._writes_here = RateLimiter(config.ONLINE_WRITES_PER_ADDRESS, config.RATE_WINDOW)
         # Never used to sign in: the pages are open. Only the routes need an object.
         self._auth = StaffAuth(random_password(), clock, iterations=1)
         self._background = background_cases(clock.now(), 0)[2]
@@ -232,8 +234,7 @@ class OnlineApp:
         sent = read(request.headers.get("cookie", ""), self._secret)
         # Visitors behind one address (one Wi-Fi) do not use up each other's requests.
         visitor = sent.room if sent else request.address
-        limiter = self._writes if request.method == "POST" else self._reads
-        wait = limiter.wait_seconds(visitor, self._clock.now())
+        wait = self._wait(request, visitor)
         if wait > 0:
             return error_response(429, "rate_limited", (("Retry-After", str(wait)),)).with_headers(*SECURITY_HEADERS)
         with self._lock:
@@ -241,19 +242,37 @@ class OnlineApp:
             turn = self._turn(room.log) if request.method == "POST" else None
         fields = _fields(request)
         # Without the lock: the language model takes seconds, and the other phones go on asking.
-        with self._budget.of(visitor) if self._budget else nullcontext():
+        with self._budget.of(visitor, request.address) if self._budget else nullcontext():
             response = room.handle(request, turn)
         secure = request.headers.get("x-forwarded-proto", "") == "https"
         if turn is not None and response.status == 200 and request.path not in _NOT_KEPT:
             event = Event(turn.at, request.path, fields, turn.match)
             log = self._kept(room, event)
             return Response(response.status, (*response.headers, *cookies(log, self._secret, secure, event)), response.body)
-        # Only a visitor who has done nothing yet gets a board without doing anything. The
-        # cookie has a name of its own: a late reply must not wipe out the first action.
-        if turn is None and sent is None and response.status == 200:
-            first = seed_cookie(room.log, self._secret, secure)
-            return Response(response.status, (*response.headers, first), response.body)
+        if turn is None and response.status == 200:
+            return Response(response.status, (*response.headers, *self._news(sent, room, secure)), response.body)
         return response
+
+    def _wait(self, request: Request, visitor: str) -> int:
+        """Seconds to wait, for one visitor and for one address with all its visitors."""
+        post, now = request.method == "POST", self._clock.now()
+        own, shared = (self._writes, self._writes_here) if post else (self._reads, self._reads_here)
+        return own.wait_seconds(visitor, now) or shared.wait_seconds(request.address, now)
+
+    def _news(self, sent: Log | None, room: _Room, secure: bool) -> tuple[tuple[str, str], ...]:
+        """The cookies that a visitor who only looks needs.
+
+        A visitor who has done nothing yet gets a board. Its cookie has a name of its own: a late
+        reply must not wipe out the first action. And when the reply to an action got lost (the
+        page was left while the model was thinking), the board knows more than the cookies.
+        """
+        if sent is None:
+            return (seed_cookie(room.log, self._secret, secure),)
+        with self._lock:
+            log = room.log
+        if log == sent:
+            return ()
+        return cookies(fitted(log, self._secret, self._background), self._secret, secure)
 
     def _kept(self, room: _Room, event: Event) -> Log:
         """Put what happened into the log of the board."""

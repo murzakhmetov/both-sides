@@ -75,9 +75,16 @@ export function usePhone(side: Side) {
   const screen = screenOf(view)
   const denial = useDenyWindow(view, poll.askedAt)
 
-  // A new transfer starts with an empty field. This comes before useFill, which may
-  // already have the text for the new transfer.
-  useEffect(() => setText(''), [caseId])
+  const openCase = useRef(caseId)
+
+  // A new transfer starts with an empty field and waits for nothing. This comes before
+  // useFill, which may already have the text for the new transfer.
+  useEffect(() => {
+    openCase.current = caseId
+    onWay.current = []
+    setRunning(null)
+    setText('')
+  }, [caseId])
 
   useFill(side, caseId, setText)
 
@@ -94,13 +101,16 @@ export function usePhone(side: Side) {
       setFailure(null)
       try {
         await apply(() => post<PhoneView>(`/api/phone/${side}/${action}`, { case_id: caseId, ...body }))
-        if (action === 'answer') setText('')
+        if (action === 'answer' && openCase.current === caseId) setText('')
       } catch (error) {
-        setFailure({ code: errorCode(error), screen })
+        if (openCase.current === caseId) setFailure({ code: errorCode(error), screen })
         refresh()
       } finally {
-        onWay.current = onWay.current.slice(1)
-        if (onWay.current.length === 0) setRunning(null)
+        // An answer may wait for the language model while the next transfer is already open.
+        if (openCase.current === caseId) {
+          onWay.current = onWay.current.slice(1)
+          if (onWay.current.length === 0) setRunning(null)
+        }
       }
     },
     [apply, caseId, refresh, screen, side],

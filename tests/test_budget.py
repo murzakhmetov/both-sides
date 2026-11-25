@@ -44,20 +44,20 @@ def clock() -> ManualClock:
 
 def test_one_visitor_has_a_share(clock: ManualClock) -> None:
     budget = Budget(clock)
-    with budget.of("a"):
+    with budget.of("a", "here"):
         answers = [budget.may_ask() for _ in range(config.ONLINE_GEMINI_SHARE + 3)]
     assert answers == [True] * config.ONLINE_GEMINI_SHARE + [False] * 3
-    with budget.of("b"):
+    with budget.of("b", "here"):
         assert budget.may_ask()
     clock.advance(seconds=61)
-    with budget.of("a"):
+    with budget.of("a", "here"):
         assert budget.may_ask()
 
 
 def test_all_visitors_together_have_a_limit_a_minute(clock: ManualClock) -> None:
     budget, granted = Budget(clock), 0
     for number in range(config.ONLINE_GEMINI_CALLS + 20):
-        with budget.of(f"visitor {number}"):
+        with budget.of(f"visitor {number}", f"address {number}"):
             granted += budget.may_ask()
     assert granted == config.ONLINE_GEMINI_CALLS
 
@@ -66,25 +66,41 @@ def test_there_is_a_limit_a_day(clock: ManualClock) -> None:
     budget, granted = Budget(clock), 0
     for minute in range(60):
         for number in range(config.ONLINE_GEMINI_CALLS):
-            with budget.of(f"{minute} {number}"):
+            with budget.of(f"{minute} {number}", f"{minute} {number}"):
                 granted += budget.may_ask()
         clock.advance(seconds=61)
     assert granted == config.ONLINE_GEMINI_CALLS_A_DAY
     clock.advance(hours=25)
-    with budget.of("tomorrow"):
+    with budget.of("tomorrow", "here"):
         assert budget.may_ask()
 
 
 def test_a_refused_visitor_costs_the_others_nothing(clock: ManualClock) -> None:
     budget = Budget(clock)
-    with budget.of("greedy"):
+    with budget.of("greedy", "there"):
         for _ in range(config.ONLINE_GEMINI_CALLS * 3):
             budget.may_ask()
     others = 0
     for number in range(config.ONLINE_GEMINI_CALLS):
-        with budget.of(f"visitor {number}"):
+        with budget.of(f"visitor {number}", f"address {number}"):
             others += budget.may_ask()
     assert others == config.ONLINE_GEMINI_CALLS - config.ONLINE_GEMINI_SHARE
+
+
+def test_an_address_that_drops_its_cookies_has_a_share_too(clock: ManualClock) -> None:
+    budget, granted = Budget(clock), 0
+    for number in range(config.ONLINE_GEMINI_ADDRESS + 10):
+        with budget.of(f"new visitor {number}", "one address"):
+            granted += budget.may_ask()
+    assert granted == config.ONLINE_GEMINI_ADDRESS
+    with budget.of("somebody else", "another address"):
+        assert budget.may_ask()
+    for minute in range(40):
+        clock.advance(seconds=61)
+        for number in range(config.ONLINE_GEMINI_ADDRESS):
+            with budget.of(f"{minute} {number}", "one address"):
+                granted += budget.may_ask()
+    assert granted == config.ONLINE_GEMINI_ADDRESS_A_DAY
 
 
 def play(visitor: Visitor) -> Any:

@@ -103,14 +103,14 @@ npx vercel env add GEMINI_API_KEY production --sensitive
 
 To change the key, remove it first (`npx vercel env rm GEMINI_API_KEY production`), add the new one and deploy again. Without the new deployment the site goes on with the old key, and with the word list once that key is deleted.
 
-The page is public, so the key has a budget: at most 16 requests a minute for one visitor, 90 a minute and 3,000 a day for one running copy; after that the offline matcher answers. Only a limit set at Google covers all running copies together. The mini-demo of the landing page never asks Gemini. On Vercel `GEMINI_MODEL` is `gemini-3.5-flash`: on 25 November 2026 the default `gemini-3.8-flash` answered every request with 503 (overloaded).
+The page is public, so the key has a budget: at most 16 requests a minute for one visitor, 60 a minute and 1,500 a day for one address, 90 a minute and 3,000 a day for one running copy; after that the offline matcher answers. Only a limit set at Google covers all running copies together. The mini-demo of the landing page never asks Gemini. On Vercel `GEMINI_MODEL` is `gemini-3.5-flash`: on 25 November 2026 the default `gemini-3.8-flash` answered every request with 503 (overloaded).
 
 Functions on Vercel stop and start as they like and share no memory. So online every visitor has a board of their own: what happened on it travels in signed cookies, and any running copy plays it again ([online.py](bothsides/server/online.py)). It differs from the laptop in four points:
 
 - staff pages are open without a password, because a visitor sees only the own board with invented people;
 - one board per browser: two real phones cannot share a case (use the laptop for that);
 - a board starts again after two hours without an action, and after a new deployment;
-- when the cookies (9.9 KB) are full, what a later run of the same scene has wiped out leaves the log; the board stays the same.
+- when the board cookies (7 KB) are full, what a later run of the same scene has wiped out leaves the log; the board stays the same.
 
 After a change run `npm run build` in `frontend/`, then from this folder:
 

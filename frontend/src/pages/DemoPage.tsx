@@ -76,7 +76,7 @@ function SceneChooser({ list, busy, onStart }: { list: SceneList; busy: boolean;
             <button
               aria-disabled={busy || undefined}
               aria-pressed={pressed}
-              className={`min-h-11 rounded-full px-5 font-bold transition-colors duration-150 ${
+              className={`min-h-11 rounded-full px-5 font-bold transition duration-150 aria-disabled:opacity-50 ${
                 pressed ? 'bg-text text-surface' : 'bg-surface hover:bg-line'
               }`}
               key={scene.id}

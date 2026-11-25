@@ -6,7 +6,7 @@ import pytest
 
 from bothsides.matching.chain import FallbackMatcher
 from bothsides.matching.factory import build_matcher
-from bothsides.matching.gemini_models import ModelState, choose_model
+from bothsides.matching.gemini_models import ModelState, choose_model, spare_models
 from bothsides.matching.offline import OfflineMatcher
 from bothsides.matching.types import MatcherError, MatchSource
 
@@ -31,6 +31,12 @@ KEY = "unit-test-key-value"
 def test_choose_model(listed: list[str], wanted: str, model: str, state: ModelState) -> None:
     choice = choose_model(listed, wanted)
     assert (choice.model, choice.state) == (model, state)
+
+
+def test_spare_models_are_listed_light_first_and_never_old() -> None:
+    listed = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-2.5-flash", "gemini-3.8-flash-tts"]
+    assert spare_models(listed, "gemini-3.8-flash") == ("gemini-3.5-flash-lite", "gemini-3.7-flash", "gemini-3.6-flash")
+    assert spare_models(["gemini-3.8-flash", "gemini-2.5-flash"], "gemini-3.8-flash") == ()
 
 
 def test_chain_prefers_the_language_model() -> None:

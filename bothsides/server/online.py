@@ -1,8 +1,9 @@
 """The whole app for a host that keeps nothing between requests (functions on Vercel).
 
 Every visitor has a board of their own. What happened on it travels in signed cookies, so any
-running copy of the function can play it again; the memory here only saves that work. Staff
-pages are open: a visitor sees nothing but their own board with invented people.
+running copy of the function can play it again; the memory here only saves that work. A board
+that is played again asks no matcher: every comparison stands in the log. Staff pages are open:
+a visitor sees nothing but their own board with invented people.
 """
 
 from __future__ import annotations
@@ -14,7 +15,7 @@ import threading
 from collections import OrderedDict
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Callable
+from typing import Any, Callable
 
 from .. import config
 from ..cases.service import CaseService
@@ -22,6 +23,7 @@ from ..clock import Clock
 from ..config import BANK_TIMEZONE
 from ..demo.seed import background_cases
 from ..matching.factory import MatcherSetup
+from ..matching.types import Matcher, MatcherError, MatchResult, MatchSource, Tri
 from .app import App
 from .auth import StaffAuth, random_password
 from .boardcookie import Event, Log, cookies, fitted, read
@@ -45,15 +47,92 @@ class _EveryHost(frozenset):  # type: ignore[type-arg]
         return True
 
 
-class _RoomClock:
-    """The real clock, or a moment of the past while a board is played again."""
+def _milliseconds(moment: datetime) -> int:
+    return int(moment.timestamp() * 1000)
 
-    def __init__(self, real: Clock) -> None:
+
+def _moment(milliseconds: int) -> datetime:
+    return datetime.fromtimestamp(milliseconds / 1000, timezone.utc).astimezone(BANK_TIMEZONE)
+
+
+def _kept(result: MatchResult) -> tuple[Any, ...]:
+    """The result as plain values for the log."""
+    return (
+        result.probability, result.same_relation.value, result.same_reason.value, result.note,
+        result.source.value, result.model, result.fallback_code,
+    )
+
+
+def _result(kept: tuple[Any, ...]) -> MatchResult:
+    probability, relation, reason, note, source, model, code = kept
+    return MatchResult(probability, Tri(relation), Tri(reason), note, MatchSource(source), model, code)
+
+
+@dataclass(slots=True)
+class _Turn:
+    """One action on a board: made now, or played again from the log.
+
+    *match* is the comparison it led to: when it ended, then the result, if there was one.
+    """
+
+    at: int
+    again: bool = False
+    match: tuple[Any, ...] | None = None
+    ended: int = 0
+
+    @property
+    def moment(self) -> datetime:
+        return _moment(max(self.at, self.ended))
+
+
+class _Turns(threading.local):
+    """The turn that this thread makes. A phone that only reads makes none."""
+
+    now: _Turn | None = None
+
+
+class _BoardClock:
+    """The real clock. In a turn its moment, so that playing it again gives the same times."""
+
+    def __init__(self, real: Clock, turns: _Turns) -> None:
         self._real = real
-        self.moment: datetime | None = None
+        self._turns = turns
 
     def now(self) -> datetime:
-        return self.moment or self._real.now()
+        turn = self._turns.now
+        return turn.moment if turn else self._real.now()
+
+
+class _BoardMatcher:
+    """Asks once. A turn that is played again gets what its log kept."""
+
+    def __init__(self, real: Matcher, clock: Clock, turns: _Turns) -> None:
+        self._real = real
+        self._clock = clock
+        self._turns = turns
+
+    def compare(self, receiver_text: str, sender_text: str) -> MatchResult:
+        turn = self._turns.now
+        if turn is None:
+            raise MatcherError("no_matcher")
+        if turn.again:
+            return self._played(turn)
+        kept: tuple[Any, ...] = ()
+        try:
+            result = self._real.compare(receiver_text, sender_text)
+            kept = _kept(result)
+            return result
+        finally:
+            turn.ended = _milliseconds(self._clock.now())
+            turn.match = (turn.ended, *kept)
+
+    @staticmethod
+    def _played(turn: _Turn) -> MatchResult:
+        if turn.match is None or len(turn.match) < 2:
+            turn.ended = turn.match[0] if turn.match else 0
+            raise MatcherError("no_matcher")
+        turn.ended = turn.match[0]
+        return _result(turn.match[1:])
 
 
 class _AtOnce:
@@ -75,16 +154,16 @@ class SandboxApp(App):
 @dataclass(slots=True)
 class _Room:
     app: SandboxApp
-    clock: _RoomClock
+    turns: _Turns
     log: Log
 
-
-def _milliseconds(moment: datetime) -> int:
-    return int(moment.timestamp() * 1000)
-
-
-def _moment(milliseconds: int) -> datetime:
-    return datetime.fromtimestamp(milliseconds / 1000, timezone.utc).astimezone(BANK_TIMEZONE)
+    def handle(self, request: Request, turn: _Turn | None) -> Response:
+        """Let the app answer; *turn* is what its clock and its matcher see."""
+        self.turns.now = turn
+        try:
+            return self.app.handle(request)
+        finally:
+            self.turns.now = None
 
 
 class OnlineApp:
@@ -105,8 +184,7 @@ class OnlineApp:
     def handle(self, request: Request) -> Response:
         """Answer one request. Never raises."""
         try:
-            with self._lock:
-                return self._answer(request)
+            return self._answer(request)
         except Exception as error:
             # The message may hold user text, so only the class name is logged.
             _LOG.error("request failed: %s", type(error).__name__)
@@ -118,16 +196,26 @@ class OnlineApp:
         if wait > 0:
             return error_response(429, "rate_limited", (("Retry-After", str(wait)),)).with_headers(*SECURITY_HEADERS)
         sent = read(request.headers.get("cookie", ""), self._secret)
-        room = self._room(sent)
-        response = room.app.handle(request)
-        kept = request.method == "POST" and response.status == 200 and request.path not in _NOT_KEPT
-        if kept:
-            event = Event(_milliseconds(self._clock.now()), request.path, json.loads(request.body or b"{}"))
-            room.log = fitted(room.log.with_event(event), self._secret, self._background)
-        if kept or sent is None:
-            secure = request.headers.get("x-forwarded-proto", "") == "https"
-            return Response(response.status, (*response.headers, *cookies(room.log, self._secret, secure)), response.body)
-        return response
+        with self._lock:
+            room = self._room(sent)
+            turn = self._turn(room.log) if request.method == "POST" else None
+        # Without the lock: the language model takes seconds, and the other phones go on asking.
+        response = room.handle(request, turn)
+        with self._lock:
+            kept = turn is not None and response.status == 200 and request.path not in _NOT_KEPT
+            if kept:
+                event = Event(turn.at, request.path, json.loads(request.body or b"{}"), turn.match)
+                room.log = fitted(room.log.with_event(event), self._secret, self._background)
+            if not kept and sent is not None:
+                return response
+            log = room.log
+        secure = request.headers.get("x-forwarded-proto", "") == "https"
+        return Response(response.status, (*response.headers, *cookies(log, self._secret, secure)), response.body)
+
+    def _turn(self, log: Log) -> _Turn:
+        """A turn that begins now, and not before anything this board already knows."""
+        last = log.events[-1].at if log.events else log.created
+        return _Turn(max(_milliseconds(self._clock.now()), last))
 
     def _room(self, sent: Log | None) -> _Room:
         log = sent or Log(secrets.token_urlsafe(18), _milliseconds(self._clock.now()), _FIRST_NUMBER)
@@ -142,13 +230,15 @@ class OnlineApp:
         return known
 
     def _rebuilt(self, log: Log) -> _Room:
-        clock = _RoomClock(self._clock)
-        clock.moment = _moment(log.created)
-        service = CaseService(clock=clock, matcher=self._setup.matcher, executor=_AtOnce(), first_number=log.first)
-        app = SandboxApp(service, self._auth, self._setup, clock, allowed_hosts=_EveryHost())
+        turns = _Turns()
+        clock = _BoardClock(self._clock, turns)
+        turns.now = _Turn(log.created, again=True)
+        matcher = _BoardMatcher(self._setup.matcher, self._clock, turns)
+        service = CaseService(clock=clock, matcher=matcher, executor=_AtOnce(), first_number=log.first)
+        room = _Room(SandboxApp(service, self._auth, self._setup, clock, allowed_hosts=_EveryHost()), turns, log)
         for event in log.events:
-            clock.moment = _moment(event.at)
             body = json.dumps(event.data).encode("utf-8")
-            app.handle(Request("POST", event.path, _REPLAY_HEADERS, body, "replay"))
-        clock.moment = None
-        return _Room(app, clock, log)
+            again = _Turn(event.at, again=True, match=event.match)
+            room.handle(Request("POST", event.path, _REPLAY_HEADERS, body, "replay"), again)
+        turns.now = None
+        return room

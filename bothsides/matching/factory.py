@@ -11,7 +11,7 @@ from .. import config
 from .chain import FallbackMatcher
 from .deadline import call_with_deadline
 from .gemini import GeminiMatcher, make_client
-from .gemini_models import ModelState, choose_model, list_flash_names
+from .gemini_models import ModelState, choose_model, list_flash_names, spare_models
 from .offline import OfflineMatcher
 from .types import Matcher
 
@@ -80,7 +80,7 @@ class MatcherSetup:
             self._model_state = ModelState.UNCONFIRMED
             return
         choice = choose_model(listed, gemini.model)
-        gemini.use_model(choice.model)
+        gemini.use_model(choice.model, spare_models(listed, choice.model))
         self._model_state = choice.state
 
     def _after_comparison(self, code: str) -> None:
@@ -91,7 +91,12 @@ class MatcherSetup:
     def confirm_model_in_background(self) -> None:
         """Start the model check without delaying anybody."""
         if self._gemini is not None:
-            threading.Thread(target=self.confirm_model, name="model-check", daemon=True).start()
+            threading.Thread(target=self._prepare, name="model-check", daemon=True).start()
+
+    def _prepare(self) -> None:
+        if self._gemini is not None:
+            self._gemini.warm_up()
+        self.confirm_model()
 
 
 def _offline(reason: str) -> MatcherSetup:
@@ -102,6 +107,7 @@ def build_matcher(
     offline: bool,
     env: Mapping[str, str],
     client_factory: Callable[[str], Any] = make_client,
+    may_ask: Callable[[], bool] = lambda: True,
 ) -> MatcherSetup:
     """Use Gemini when a key and the package are there, else the offline matcher."""
     if offline:
@@ -117,5 +123,6 @@ def build_matcher(
         _LOG.error("cannot create the gemini client: %s", type(error).__name__)
         return _offline("client_error")
     model = env.get("GEMINI_MODEL", "").strip() or config.DEFAULT_GEMINI_MODEL
-    gemini = GeminiMatcher(client, model.removeprefix("models/"))
+    gemini = GeminiMatcher(client, model.removeprefix("models/"), may_ask=may_ask)
+    gemini.use_model(gemini.model, tuple(name for name in config.GEMINI_SPARE_MODELS if name != gemini.model))
     return MatcherSetup(gemini, client, "")

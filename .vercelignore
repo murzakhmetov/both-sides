@@ -1,7 +1,8 @@
-# The built pages, the server and its two functions go to Vercel.
+# The built pages, the server, its two functions and the list of its one package go to Vercel.
 /*
 !/api
 !/bothsides
 !/web
 !/vercel.json
+!/requirements.txt
 __pycache__

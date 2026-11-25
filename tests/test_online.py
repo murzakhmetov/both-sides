@@ -3,16 +3,18 @@
 from __future__ import annotations
 
 import json
+import threading
 from typing import Any
 
 import pytest
 
 from bothsides.matching.factory import build_matcher
+from bothsides.matching.types import MatcherError, Tri
 from bothsides.server.boardcookie import COOKIE, Event, Log, cookies, fitted, read
 from bothsides.server.messages import Request, Response
 from bothsides.server.online import OnlineApp
 
-from .fakes import ManualClock
+from .fakes import BlockingMatcher, ManualClock, StubMatcher, gemini_result
 from .helpers import BROTHER_RECEIVER, BROTHER_SENDER, SISTER_RECEIVER, SISTER_SENDER, START
 
 HOST = "both-sides.vercel.app"
@@ -184,3 +186,98 @@ def test_other_sites_cannot_write(visitor: Visitor) -> None:
 def test_one_address_has_a_limit(visitor: Visitor) -> None:
     states = {visitor.send("POST", "/api/reset").status for _ in range(130)}
     assert 429 in states
+
+
+# -- with a language model ----------------------------------------------------------------------
+
+
+class ModelSetup:
+    """A set-up around any matcher."""
+
+    def __init__(self, matcher: Any) -> None:
+        self.matcher = matcher
+
+    def status(self) -> Any:
+        return build_matcher(True, {}).status()
+
+
+def model_app(answer: Any, clock: ManualClock) -> tuple[OnlineApp, Any]:
+    matcher = StubMatcher(answer)
+    return OnlineApp(ModelSetup(matcher), clock, SECRET), matcher
+
+
+def play_sister(visitor: Visitor) -> None:
+    visitor.post("/api/scenes/sister/start")
+    visitor.answer("receiver", SISTER_RECEIVER)
+    visitor.answer("sender", SISTER_SENDER)
+
+
+def test_the_model_is_asked_once_and_its_answer_is_kept(clock: ManualClock) -> None:
+    app, first = model_app(gemini_result(0.02, Tri.FALSE, Tri.FALSE), clock)
+    visitor = Visitor(app)
+    play_sister(visitor)
+    assert visitor.get("/api/stage")["case"]["state"] == "held"
+    before = visitor.get("/api/stage")["case"]
+    visitor.app, second = model_app(gemini_result(0.99), clock)
+    assert visitor.get("/api/stage")["case"] == before
+    assert before["match"]["source"] == "gemini" and before["match"]["note"] == "Fake model note."
+    visitor.post(f"/api/cases/{visitor.case_id()}/return")
+    assert visitor.get("/api/phone/receiver")["status"] == "returned"
+    assert (len(first.calls), len(second.calls)) == (1, 0)
+
+
+def test_a_comparison_that_failed_stays_failed(clock: ManualClock) -> None:
+    visitor = Visitor(model_app(MatcherError("no_matcher"), clock)[0])
+    play_sister(visitor)
+    before = visitor.get("/api/stage")["case"]
+    visitor.app, second = model_app(gemini_result(0.99), clock)
+    assert visitor.get("/api/stage")["case"] == before
+    assert before["match"] is None and second.calls == []
+
+
+def test_times_are_the_same_when_the_board_is_played_again(clock: ManualClock) -> None:
+    class Slow(StubMatcher):
+        def compare(self, receiver_text: str, sender_text: str) -> Any:
+            clock.advance(seconds=4.321)
+            return super().compare(receiver_text, sender_text)
+
+    visitor = Visitor(OnlineApp(ModelSetup(Slow(gemini_result(0.02, Tri.FALSE, Tri.FALSE))), clock, SECRET))
+    play_sister(visitor)
+    file = visitor.get(f"/api/cases/{visitor.case_id()}")
+    visitor.app = model_app(gemini_result(0.99), clock)[0]
+    assert visitor.get(f"/api/cases/{visitor.case_id()}") == file
+
+
+def test_phones_are_answered_while_the_model_thinks(clock: ManualClock) -> None:
+    matcher = BlockingMatcher(gemini_result(0.95))
+    app = OnlineApp(ModelSetup(matcher), clock, SECRET)
+    visitor, other = Visitor(app), Visitor(app, "203.0.113.8")
+    visitor.post("/api/scenes/brother/start")
+    visitor.answer("receiver", BROTHER_RECEIVER)
+    thread = threading.Thread(target=lambda: visitor.answer("sender", BROTHER_SENDER), daemon=True)
+    thread.start()
+    assert matcher.started.wait(5)
+    assert other.get("/api/status")["sandbox"] is True
+    assert Visitor.get(visitor, "/api/stage")["case"]["state"] == "comparing"
+    matcher.release.set()
+    thread.join(5)
+    assert visitor.get("/api/phone/receiver")["status"] == "credited"
+
+
+def test_a_slow_action_keeps_its_place_in_time() -> None:
+    log = Log("r" * 24, 0, 4107, (Event(5, "/api/reset", {}),))
+    log = log.with_event(Event(9, "/api/scenes/sister/start", {})).with_event(Event(7, "/api/phone/sender/answer", {}, (8,)))
+    assert [event.at for event in log.events] == [5, 7, 9]
+    header = "; ".join(value.split(";", 1)[0] for _, value in cookies(log, b"one", True))
+    assert read(header, b"one") == log
+
+
+def test_a_visitor_cannot_bring_a_result_along(clock: ManualClock) -> None:
+    app, matcher = model_app(gemini_result(0.02, Tri.FALSE, Tri.FALSE), clock)
+    visitor = Visitor(app)
+    visitor.post("/api/scenes/sister/start")
+    visitor.answer("receiver", SISTER_RECEIVER)
+    extra = {"case_id": visitor.case_id(), "text": SISTER_SENDER, "match": [1, 0.99, "true", "true", "", "gemini", "x", ""]}
+    visitor.post("/api/phone/sender/answer", extra)
+    visitor.app = model_app(gemini_result(0.99), clock)[0]
+    assert visitor.get("/api/stage")["case"]["state"] in {"held", "question", "awaiting_sender"}

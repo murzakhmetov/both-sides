@@ -181,6 +181,7 @@ def _named_error(name: str) -> Exception:
         ("RateLimitError", "rate_limited"),
         ("NotFoundError", "model_not_found"),
         ("APIConnectionError", "connection"),
+        ("InternalServerError", "server_error"),
         ("BadRequestError", "error"),
         ("SomethingNew", "error"),
     ],
@@ -212,3 +213,76 @@ def test_long_answers_are_cut_before_sending() -> None:
     subject, client = matcher(gemini_reply())
     subject.compare("аренда " * 500, SENDER)
     assert len(client.interactions.calls[0]["input"]) < 2500
+
+
+# -- spare models -----------------------------------------------------------------------------
+
+
+def with_spares(replies: dict[str, object], timeout: float = 20.0) -> tuple[GeminiMatcher, FakeGeminiClient]:
+    """A matcher with the models a, b and c, and what each of them answers."""
+    client = FakeGeminiClient(lambda request: replies[request["model"]])
+    subject = GeminiMatcher(client, "a", timeout_seconds=timeout)
+    subject.use_model("a", ("b", "c"))
+    return subject, client
+
+
+def asked(client: FakeGeminiClient) -> list[str]:
+    return [call["model"] for call in client.interactions.calls]
+
+
+@pytest.mark.parametrize("name", ["InternalServerError", "RateLimitError"])
+def test_an_overloaded_model_is_followed_by_a_spare_one(name: str) -> None:
+    subject, client = with_spares({"a": _named_error(name), "b": _named_error(name), "c": gemini_reply()})
+    assert subject.compare(RECEIVER, SENDER).model == "c"
+    assert asked(client) == ["a", "b", "c"]
+
+
+def test_a_spare_model_that_is_gone_is_skipped() -> None:
+    subject, client = with_spares({"a": _named_error("InternalServerError"), "b": _named_error("NotFoundError"), "c": gemini_reply()})
+    assert subject.compare(RECEIVER, SENDER).model == "c"
+
+
+def test_the_main_model_that_is_gone_is_reported() -> None:
+    subject, client = with_spares({"a": _named_error("NotFoundError"), "b": gemini_reply(), "c": gemini_reply()})
+    with pytest.raises(MatcherError) as caught:
+        subject.compare(RECEIVER, SENDER)
+    assert (caught.value.code, asked(client)) == ("model_not_found", ["a"])
+
+
+def test_the_model_that_answered_a_moment_ago_is_asked_first() -> None:
+    subject, client = with_spares({"a": _named_error("InternalServerError"), "b": gemini_reply(), "c": gemini_reply()})
+    subject.compare(RECEIVER, SENDER)
+    subject.compare(RECEIVER, SENDER)
+    assert asked(client) == ["a", "b", "b"]
+
+
+@pytest.mark.parametrize("name", ["AuthenticationError", "APIConnectionError", "SomethingNew"])
+def test_other_failures_end_the_comparison(name: str) -> None:
+    subject, client = with_spares({"a": _named_error(name), "b": gemini_reply(), "c": gemini_reply()})
+    with pytest.raises(MatcherError):
+        subject.compare(RECEIVER, SENDER)
+    assert asked(client) == ["a"]
+
+
+def test_all_models_overloaded_is_one_failure_after_three_requests() -> None:
+    busy = _named_error("InternalServerError")
+    subject, client = with_spares({"a": busy, "b": busy, "c": busy})
+    with pytest.raises(MatcherError) as caught:
+        subject.compare(RECEIVER, SENDER)
+    assert caught.value.code == "server_error"
+    assert asked(client) == ["a", "b", "c"]
+
+
+def test_no_spare_is_asked_when_the_time_is_up() -> None:
+    subject, client = with_spares({"a": _named_error("InternalServerError"), "b": gemini_reply(), "c": gemini_reply()}, timeout=1.0)
+    with pytest.raises(MatcherError):
+        subject.compare(RECEIVER, SENDER)
+    assert asked(client) == ["a"]
+
+
+def test_a_budget_stops_requests_before_they_are_made() -> None:
+    client = FakeGeminiClient(gemini_reply())
+    subject = GeminiMatcher(client, "a", may_ask=lambda: False)
+    with pytest.raises(MatcherError) as caught:
+        subject.compare(RECEIVER, SENDER)
+    assert (caught.value.code, client.interactions.calls) == ("rate_limited", [])

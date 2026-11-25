@@ -23,11 +23,12 @@ MAX_AGE_SECONDS = 2 * 60 * 60
 
 @dataclass(frozen=True, slots=True)
 class Event:
-    """One accepted action: when (milliseconds), where, and with which fields."""
+    """One accepted action: when (milliseconds), where, with which fields, and the comparison it led to."""
 
     at: int
     path: str
     data: dict[str, Any]
+    match: tuple[Any, ...] | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -40,8 +41,8 @@ class Log:
     events: tuple[Event, ...] = ()
 
     def with_event(self, event: Event) -> "Log":
-        """Return the log with one more event."""
-        return replace(self, events=(*self.events, event))
+        """Return the log with one more event, in the order of time: a slow one may end after a later one."""
+        return replace(self, events=tuple(sorted((*self.events, event), key=lambda known: known.at)))
 
     def from_last_start(self, background: int) -> "Log":
         """Return a shorter log: the board begins anew with the last scene that was opened.
@@ -61,8 +62,13 @@ def _sign(secret: bytes, data: bytes) -> bytes:
     return hmac.new(secret, data, hashlib.sha256).digest()[:_SIGNATURE_BYTES]
 
 
+def _raw(event: Event) -> list[Any]:
+    return [event.at, event.path, event.data, *([] if event.match is None else [list(event.match)])]
+
+
 def _pack(log: Log, secret: bytes) -> str:
-    plain = json.dumps([log.room, log.created, log.first, [[e.at, e.path, e.data] for e in log.events]], ensure_ascii=False, separators=(",", ":"))
+    board = [log.room, log.created, log.first, [_raw(event) for event in log.events]]
+    plain = json.dumps(board, ensure_ascii=False, separators=(",", ":"))
     data = zlib.compress(plain.encode("utf-8"), 9)
     return base64.urlsafe_b64encode(_sign(secret, data) + data).decode("ascii").rstrip("=")
 
@@ -87,10 +93,10 @@ def cookies(log: Log, secret: bytes, secure: bool) -> tuple[tuple[str, str], ...
 
 
 def _event(raw: Any) -> Event:
-    at, path, data = raw
+    at, path, data, *rest = raw
     if not (isinstance(at, int) and isinstance(path, str) and isinstance(data, dict)):
         raise ValueError("no event")
-    return Event(at, path, data)
+    return Event(at, path, data, tuple(rest[0]) if rest else None)
 
 
 def read(header: str, secret: bytes) -> Log | None:

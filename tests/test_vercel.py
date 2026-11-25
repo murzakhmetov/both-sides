@@ -160,7 +160,7 @@ def test_only_what_is_needed_is_uploaded() -> None:
     lines = (ROOT / ".vercelignore").read_text(encoding="utf-8").splitlines()
     rules = [line for line in lines if line and not line.startswith("#")]
     assert rules[0] == "/*"
-    assert {rule for rule in rules if rule.startswith("!")} == {"!/api", "!/bothsides", "!/web", "!/vercel.json"}
+    assert {rule for rule in rules if rule.startswith("!")} == {"!/api", "!/bothsides", "!/web", "!/vercel.json", "!/requirements.txt"}
 
 
 @pytest.mark.parametrize(

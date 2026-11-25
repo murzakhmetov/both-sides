@@ -15,6 +15,7 @@ _FLASH_VARIANT = re.compile(r"gemini-(?:(\d+)(?:\.(\d+))?-)?flash(-lite)?-(?:lat
 
 
 _LATEST = 99
+_SPARES = 3
 
 
 class ModelState(str, Enum):
@@ -56,6 +57,20 @@ def _rank(name: str, pattern: re.Pattern[str]) -> tuple[bool, int, int] | None:
 def _newest(names: tuple[str, ...], pattern: re.Pattern[str]) -> str | None:
     ranked = [(rank, name) for name in names if (rank := _rank(name, pattern)) is not None]
     return max(ranked)[1] if ranked else None
+
+
+def spare_models(listed: Iterable[str], used: str) -> tuple[str, ...]:
+    """Other listed Flash models with the same settings (Gemini 3 and later): the newest light one, then the newest ones.
+
+    A light model is rarely overloaded together with the others.
+    """
+    ranked = sorted(
+        ((rank, name) for name in set(listed) if name != used and (rank := _rank(name, _FLASH)) is not None and rank[1] >= 3),
+        key=lambda item: (item[0][1], item[0][2], item[0][0]),
+        reverse=True,
+    )
+    light = [name for rank, name in ranked if not rank[0]][:1]
+    return (*light, *(name for _, name in ranked if name not in light))[:_SPARES]
 
 
 def choose_model(listed: Iterable[str], wanted: str) -> ModelChoice:

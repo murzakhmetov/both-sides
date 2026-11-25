@@ -2,6 +2,8 @@
 
 /** A request that hangs (Wi-Fi gone, laptop asleep) counts as offline after this time. */
 const TIMEOUT_MS = 8000
+/** Online the reply to an answer waits for the comparison, and the language model may take 20 seconds. */
+const ANSWER_TIMEOUT_MS = 30_000
 
 export class ApiError extends Error {
   readonly code: string
@@ -41,7 +43,7 @@ async function send<T>(path: string, init: RequestInit): Promise<T> {
     response = await fetch(path, {
       credentials: 'same-origin',
       cache: 'no-store',
-      signal: AbortSignal.timeout(TIMEOUT_MS),
+      signal: AbortSignal.timeout(init.method === 'POST' ? ANSWER_TIMEOUT_MS : TIMEOUT_MS),
       ...init,
     })
   } catch {

@@ -96,6 +96,16 @@ GEMINI_TIMEOUT_SECONDS = 20.0
 GEMINI_LIST_TIMEOUT_SECONDS = 10.0
 #: The SDK retries several times by default; one attempt is enough here.
 GEMINI_ATTEMPTS = 1
+#: Asked in this order while the model is overloaded, until Google's list says which ones there are.
+GEMINI_SPARE_MODELS = ("gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.6-flash")
+#: So long the model that answered last is asked first.
+GEMINI_KEEP_SECONDS = 120.0
+#: A model that has a spare behind it gets so many seconds of the wall-clock limit.
+GEMINI_TRY_SECONDS = 6.0
+#: A try with a spare model needs at least so much of the wall-clock limit.
+GEMINI_NEXT_TRY_SECONDS = 4.0
+#: Online, one running copy asks Gemini so often a minute; after that the offline matcher answers.
+ONLINE_GEMINI_CALLS = 20
 #: "minimal" is rejected by gemini-3.8-flash, "low" is the fastest allowed level.
 GEMINI_THINKING_LEVEL = "low"
 GEMINI_MAX_OUTPUT_TOKENS = 1024

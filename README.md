@@ -94,7 +94,15 @@ Checked in Edge and Chrome, and in the Firefox and WebKit engines of Playwright 
 
 ## Online (Vercel)
 
-<https://both-sides-six.vercel.app> carries the landing page and the whole app: phones, stage, console, demo page. The files of `web/` are static; [api/app.py](api/app.py) answers the app's addresses and [api/compare.py](api/compare.py) the mini-demo, so the mini-demo works even when the app does not. No build, no packages, no key: the offline matcher compares. `vercel.json` and `.vercelignore` hold the settings.
+<https://both-sides-six.vercel.app> carries the landing page and the whole app: phones, stage, console, demo page. The files of `web/` are static; [api/app.py](api/app.py) answers the app's addresses and [api/compare.py](api/compare.py) the mini-demo, so the mini-demo works even when the app does not. No build. `vercel.json` and `.vercelignore` hold the settings; the one package is in `requirements.txt`.
+
+The offline matcher compares until `GEMINI_API_KEY` is set on Vercel (the command asks for the key; nothing is written to a file), followed by a new deployment:
+
+```bash
+npx vercel env add GEMINI_API_KEY production --sensitive
+```
+
+One running copy asks Gemini for at most 20 comparisons a minute; after that the offline matcher answers. The mini-demo of the landing page never asks Gemini. On Vercel `GEMINI_MODEL` is `gemini-3.5-flash`: on 25 November 2026 the default `gemini-3.8-flash` answered every request with 503 (overloaded).
 
 Functions on Vercel stop and start as they like and share no memory. So online every visitor has a board of their own: what happened on it travels in signed cookies, and any running copy plays it again ([online.py](bothsides/server/online.py)). It differs from the laptop in three points:
 
@@ -146,7 +154,7 @@ Only a person ends a hold. The deadline is 18:00 on the fifth working day, count
 
 ## The AI part
 
-- Gemini through the Interactions API of `google-genai` with structured output, `store=False`, one attempt, 20 seconds in total. The call was written from the documentation page on structured outputs and the source of version 3.6.1 on 24 November 2026.
+- Gemini through the Interactions API of `google-genai` with structured output, `store=False`, one attempt per model, 20 seconds in total. While a model is overloaded (HTTP 5xx or 429) or slow, up to three other listed Flash models are asked within the same 20 seconds; the one that answered is asked first for two minutes. The call was written from the documentation page on structured outputs and the source of version 3.6.1 on 24 November 2026.
 - Sent: both answers, after digits, amounts, currency words, contacts and one leading name followed by a comma are removed. A name is removed only if it is in [names.json](bothsides/data/names.json); relation words like "Брат," or "Жене," stay. Never sent: account data, amounts, the transfer message.
 - The answers travel as JSON data with the instruction to ignore any instruction inside them. The reply is validated field by field.
 - On timeout, error, invalid JSON or a missing key the offline matcher answers. If nothing answers, a person decides.
@@ -173,7 +181,7 @@ The pairs are few, so the intervals are wide: 95% for the honest pairs is 33% to
 
 The table shows the last run. The first one gave 20 of 40, 4 of 20, 2 of 21 and 11 of 18. In between, reviewers and checkers corrected the word lists, and the rule about negations was added. They did not see the pairs, and nothing was tuned on them.
 
-**Gemini: not measured yet.** Run it with your key:
+**Gemini: not measured yet.** On 25 November 2026 scene 1 (credited, probability 0.95) and scene 2 (held, probability 0.00) were played once on Vercel with `gemini-3.5-flash`; that is a check of the connection, not a measurement. Run the evaluation with your key:
 
 ```bash
 python evaluation/evaluate.py --gemini

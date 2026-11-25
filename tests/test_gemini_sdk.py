@@ -61,7 +61,7 @@ def test_request_body_on_the_wire(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 @pytest.mark.parametrize(
-    ("status", "code"), [(401, "auth"), (403, "auth"), (404, "model_not_found"), (429, "rate_limited"), (500, "error")]
+    ("status", "code"), [(401, "auth"), (403, "auth"), (404, "model_not_found"), (429, "rate_limited"), (500, "server_error"), (503, "server_error")]
 )
 def test_http_errors_are_not_retried(status: int, code: str) -> None:
     calls = []

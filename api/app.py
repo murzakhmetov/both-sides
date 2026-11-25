@@ -1,6 +1,7 @@
 """Every other /api/... address as one function on Vercel (vercel.json leads them here).
 
-The whole app with one board per visitor. The offline matcher unless GEMINI_API_KEY is set.
+The whole app with one board per visitor. The offline matcher compares unless GEMINI_API_KEY
+is set in the project settings on Vercel.
 """
 
 from __future__ import annotations
@@ -19,11 +20,22 @@ from bothsides.clock import SystemClock  # noqa: E402
 from bothsides.matching.factory import build_matcher  # noqa: E402
 from bothsides.server.messages import Request, Response, error_response  # noqa: E402
 from bothsides.server.online import OnlineApp  # noqa: E402
+from bothsides.server.ratelimit import RateLimiter  # noqa: E402
 from bothsides.server.security import SECURITY_HEADERS  # noqa: E402
 
 #: The same in every running copy of one deployment; unknown outside of the account.
 _SECRET = (os.environ.get("VERCEL_DEPLOYMENT_ID") or os.environ.get("VERCEL_URL") or secrets.token_hex(16)).encode("utf-8")
-_APP = OnlineApp(build_matcher(False, os.environ), SystemClock(), _SECRET)
+_CLOCK = SystemClock()
+_BUDGET = RateLimiter(config.ONLINE_GEMINI_CALLS, config.RATE_WINDOW)
+
+
+def _may_ask() -> bool:
+    return _BUDGET.wait_seconds("gemini", _CLOCK.now()) == 0
+
+
+_SETUP = build_matcher(False, os.environ, may_ask=_may_ask)
+_SETUP.confirm_model_in_background()
+_APP = OnlineApp(_SETUP, _CLOCK, _SECRET)
 
 
 def _target(raw: str) -> str:

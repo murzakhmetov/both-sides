@@ -104,8 +104,8 @@ GEMINI_ATTEMPTS = 1
 GEMINI_SPARE_MODELS = ("gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.6-flash")
 #: So long a model that answered is asked first; then the main model gets its place back.
 GEMINI_KEEP_SECONDS = 120.0
-#: A model that has a spare behind it gets so many seconds of the wall-clock limit.
-GEMINI_TRY_SECONDS = 6.0
+#: After so many seconds without an answer the next model is asked beside the slow one.
+GEMINI_TRY_SECONDS = 4.0
 #: A try with a spare model needs at least so much of the wall-clock limit.
 GEMINI_NEXT_TRY_SECONDS = 4.0
 #: Online, requests to Gemini: of one visitor a minute, of one address (a hall with one Wi-Fi) a

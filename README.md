@@ -105,12 +105,13 @@ To change the key, remove it first (`npx vercel env rm GEMINI_API_KEY production
 
 The page is public, so the key has a budget: at most 16 requests a minute for one visitor, 60 a minute and 1,500 a day for one address, 90 a minute and 3,000 a day for one running copy; after that the offline matcher answers. Only a limit set at Google covers all running copies together. The mini-demo of the landing page never asks Gemini. On Vercel `GEMINI_MODEL` is `gemini-3.5-flash`: on 25 November 2026 the default `gemini-3.8-flash` answered every request with 503 (overloaded).
 
-Functions on Vercel stop and start as they like and share no memory. So online every visitor has a board of their own: what happened on it travels in signed cookies, and any running copy plays it again ([online.py](bothsides/server/online.py)). It differs from the laptop in four points:
+Functions on Vercel stop and start as they like and share no memory. So online every visitor has a board of their own: what happened on it travels in signed cookies, and any running copy plays it again ([online.py](bothsides/server/online.py)). It differs from the laptop in five points:
 
 - staff pages are open without a password, because a visitor sees only the own board with invented people;
 - one board per browser: two real phones cannot share a case (use the laptop for that);
 - a board starts again after two hours without an action, and after a new deployment;
-- when the board cookies (7 KB) are full, what a later run of the same scene has wiped out leaves the log; the board stays the same.
+- when the board cookies (7 KB) are full, what a later run of the same scene has wiped out leaves the log; the board stays the same. After about 300 actions without "Reset all" older scenes may leave it as well;
+- several actions made within the seconds of one comparison can get lost if another running copy of the server takes them and no poll reaches the first copy any more.
 
 After a change run `npm run build` in `frontend/`, then from this folder:
 
@@ -156,7 +157,7 @@ Only a person ends a hold. The deadline is 18:00 on the fifth working day, count
 
 ## The AI part
 
-- Gemini through the Interactions API of `google-genai` with structured output, `store=False`, one attempt per model, 20 seconds in total. While a model is overloaded (HTTP 5xx or 429) or takes more than 6 seconds, up to three other Flash models are asked within the same 20 seconds (from Google's list; before it has been read, from the config); the one that answered is asked first for two minutes. The case file and the stage name the model that answered. The evaluation and the live check ask one model only. The call was written from the documentation page on structured outputs and the source of version 3.6.1 on 24 November 2026.
+- Gemini through the Interactions API of `google-genai` with structured output, `store=False`, one attempt per model, 20 seconds in total. When a model is overloaded (HTTP 5xx or 429) or takes more than 4 seconds, the next Flash model is asked beside it, up to three of them within the same 20 seconds (from Google's list; before it has been read, from the config). The first answer counts, and the model that gave it is asked first for two minutes. The case file and the stage name the model that answered. The evaluation and the live check ask one model only. The call was written from the documentation page on structured outputs and the source of version 3.6.1 on 24 November 2026.
 - Sent: both answers, after digits, amounts, currency words, contacts and one leading name followed by a comma are removed. A name is removed only if it is in [names.json](bothsides/data/names.json); relation words like "Брат," or "Жене," stay. Never sent: account data, amounts, the transfer message.
 - The answers travel as JSON data with the instruction to ignore any instruction inside them. The reply is validated field by field.
 - On timeout, error, invalid JSON or a missing key the offline matcher answers. If nothing answers, a person decides.

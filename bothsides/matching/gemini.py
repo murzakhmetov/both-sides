@@ -10,6 +10,8 @@ from __future__ import annotations
 import json
 import logging
 import math
+import queue
+import threading
 import time
 from typing import Any, Callable
 
@@ -135,24 +137,56 @@ class GeminiMatcher:
         return self._first_answer(text)
 
     def _first_answer(self, text: str) -> MatchResult:
-        """One model after the other, inside one wall-clock limit."""
+        """Ask a model. When it fails or is slow, ask the next one beside it: the first answer counts."""
         until = time.monotonic() + self._timeout
-        failure, slow, models = MatcherError("rate_limited"), False, self._order()
-        for place, model in enumerate(models):
+        replies: queue.Queue[tuple[str, MatchResult | MatcherError]] = queue.Queue()
+        models, asked, running, go_on = self._order(), 0, 0, True
+        failure = MatcherError("rate_limited")
+        while True:
             left = until - time.monotonic()
-            if (place and left < config.GEMINI_NEXT_TRY_SECONDS) or not self._may_ask():
-                break
-            # When Google is slow, only the first model is cut short: the next one gets all the time.
-            whole = slow or place == len(models) - 1
+            in_time = not asked or left >= config.GEMINI_NEXT_TRY_SECONDS
+            if go_on and asked < len(models) and in_time and self._may_ask():
+                self._start(models[asked], text, left, replies)
+                asked, running = asked + 1, running + 1
+            if not running:
+                raise failure
+            if left <= 0:
+                raise MatcherError("timeout")
             try:
-                return self._once(model, text, left if whole else min(config.GEMINI_TRY_SECONDS, left))
+                model, reply = replies.get(timeout=min(left, config.GEMINI_TRY_SECONDS) if asked < len(models) else left)
+            except queue.Empty:
+                _LOG.warning("gemini is slow: %s, %.0f s left", ", ".join(models[:asked]), max(0.0, until - time.monotonic()))
+                continue
+            running -= 1
+            if isinstance(reply, MatchResult):
+                self._remember(model)
+                return reply
+            failure = reply
+            # The main model is gone: the caller has to hear it and ask for the list again.
+            gone = reply.code == "model_not_found" and model == self._model
+            if gone and not running:
+                raise reply
+            go_on = reply.code in _NEXT_MODEL and not gone
+
+    def _start(self, model: str, text: str, seconds: float, replies: queue.Queue[tuple[str, MatchResult | MatcherError]]) -> None:
+        """Ask in a thread of its own. It may go on when the comparison is over; nobody hears it then."""
+
+        def ask() -> None:
+            try:
+                replies.put((model, self._once(model, text, seconds)))
             except MatcherError as error:
-                # The main model is gone: the caller has to hear it and ask for the list again.
-                gone = error.code == "model_not_found" and model == self._model
-                if gone or error.code not in _NEXT_MODEL:
-                    raise
-                failure, slow = error, slow or error.code == "timeout"
-        raise failure
+                replies.put((model, error))
+            except Exception as error:
+                _LOG.error("gemini matcher failed: %s", type(error).__name__)
+                replies.put((model, MatcherError("error")))
+
+        threading.Thread(target=ask, name="matcher-ask", daemon=True).start()
+
+    def _remember(self, model: str) -> None:
+        """This model is asked first for a while; then the main model gets its place back."""
+        first, until = self._answered
+        if model != first or time.monotonic() > until:
+            self._answered = (model, time.monotonic() + config.GEMINI_KEEP_SECONDS)
 
     def _order(self) -> tuple[str, ...]:
         """The models to ask. The one that answered a moment ago comes first."""
@@ -169,11 +203,7 @@ class GeminiMatcher:
         reply = getattr(interaction, "output_text", None)
         if not reply and reply != "":
             raise MatcherError("empty_reply")
-        result = parse_reply(reply, model)
-        first, until = self._answered
-        if model != first or time.monotonic() > until:
-            self._answered = (model, time.monotonic() + config.GEMINI_KEEP_SECONDS)
-        return result
+        return parse_reply(reply, model)
 
     def _request(self, model: str, text: str, seconds: float) -> dict[str, Any]:
         return {

@@ -141,19 +141,49 @@ def test_every_request_is_counted_not_every_comparison() -> None:
     assert (caught.value.code, asked(client)) == ("server_error", ["a", "b"])
 
 
-def test_when_google_is_slow_the_second_model_gets_all_the_time(monkeypatch: pytest.MonkeyPatch) -> None:
+def slow_and_busy(seconds: dict[str, float], busy: str = "") -> Any:
+    def reply(request: dict[str, Any]) -> Any:
+        time.sleep(seconds.get(request["model"], 0.0))
+        return InternalServerError("busy") if request["model"] in busy else gemini_reply()
+
+    return reply
+
+
+def test_a_slow_model_stays_in_the_race(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(config, "GEMINI_TRY_SECONDS", 0.15)
+    monkeypatch.setattr(config, "GEMINI_NEXT_TRY_SECONDS", 0.1)
+    subject, client = with_models(slow_and_busy({"a": 0.5}, busy="bc"), timeout=3.0)
+    started = time.monotonic()
+    assert subject.compare(RECEIVER, SENDER).model == "a"
+    assert time.monotonic() - started < 1.2
+    assert asked(client) == ["a", "b", "c"]
+
+
+def test_the_first_answer_counts(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(config, "GEMINI_TRY_SECONDS", 0.15)
+    monkeypatch.setattr(config, "GEMINI_NEXT_TRY_SECONDS", 0.1)
+    subject, client = with_models(slow_and_busy({"a": 1.0, "b": 0.1}), timeout=3.0)
+    started = time.monotonic()
+    assert subject.compare(RECEIVER, SENDER).model == "b"
+    assert time.monotonic() - started < 0.8
+    time.sleep(1.0)
+    subject.compare(RECEIVER, SENDER)
+    assert asked(client) == ["a", "b", "b"]
+
+
+def test_a_useless_answer_of_a_spare_does_not_end_the_wait_for_the_slow_one(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(config, "GEMINI_TRY_SECONDS", 0.15)
     monkeypatch.setattr(config, "GEMINI_NEXT_TRY_SECONDS", 0.1)
 
-    def slow(request: dict[str, Any]) -> FakeInteraction:
-        time.sleep(0.5)
-        return gemini_reply()
+    def reply(request: dict[str, Any]) -> Any:
+        if request["model"] == "a":
+            time.sleep(0.5)
+            return gemini_reply()
+        return FakeInteraction("no json")
 
-    subject, client = with_models(slow, timeout=2.0)
-    started = time.monotonic()
-    assert subject.compare(RECEIVER, SENDER).model == "b"
+    subject, client = with_models(reply, timeout=3.0)
+    assert subject.compare(RECEIVER, SENDER).model == "a"
     assert asked(client) == ["a", "b"]
-    assert time.monotonic() - started < 1.5
 
 
 def test_a_comparison_never_takes_longer_than_the_limit(monkeypatch: pytest.MonkeyPatch) -> None:
